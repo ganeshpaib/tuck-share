@@ -101,3 +101,16 @@ test('the buttons: Get Tuck on Android, coming soon on iPhone, Open in Tuck', ()
   assert.ok(iphone.created.some((e) => e.textContent === 'Tuck for iPhone is coming soon'));
   assert.ok(!iphone.created.some((e) => e.attributes.href === 'https://github.com/ganeshpaib/tuck-share/releases'));
 });
+
+test('a payload that inflates past 256 KB is refused', async () => {
+  const json = JSON.stringify({ v: 1, n: 'x', p: [{ t: 'a'.repeat(3000000), u: 'https://a.com' }] });
+  const stream = new Blob([json]).stream().pipeThrough(new CompressionStream('deflate'));
+  const bytes = new Uint8Array(await new Response(stream).arrayBuffer());
+  const bomb = Buffer.from(bytes).toString('base64url');
+  assert.ok(bomb.length < 16000);
+  assert.equal(await decodePayload(bomb), null);
+});
+
+test('a payload longer than any real link is refused unread', async () => {
+  assert.equal(await decodePayload('A'.repeat(16001)), null);
+});

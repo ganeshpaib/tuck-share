@@ -3,6 +3,29 @@
 
 const GET_TUCK = 'https://github.com/ganeshpaib/tuck-share/releases';
 
+// No real link is longer; a real list inflates to a few KB. Both stop a
+// crafted link from filling the browser's memory.
+const MAX_PAYLOAD = 16000;
+const MAX_INFLATED = 256 * 1024;
+
+/** Reads [stream] to text, giving up past [limit] bytes. */
+async function readCapped(stream, limit) {
+  const reader = stream.getReader();
+  const chunks = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.length;
+    if (total > limit) {
+      await reader.cancel();
+      throw new Error('Shared list is too big');
+    }
+    chunks.push(value);
+  }
+  return new TextDecoder().decode(await new Blob(chunks).arrayBuffer());
+}
+
 // The same pastels as the app's category colours (CategoryPalette, light).
 const PALETTE = [
   '#BDDCF3', '#F9CFA6', '#F4BFD8', '#CFE0B5', '#B5E6E6',
@@ -12,7 +35,9 @@ const PALETTE = [
 /** The shared list in [payload], or null if it is not a whole version-1 list. */
 export async function decodePayload(payload) {
   try {
-    if (!payload || !/^[A-Za-z0-9_-]+$/.test(payload)) return null;
+    if (!payload || payload.length > MAX_PAYLOAD || !/^[A-Za-z0-9_-]+$/.test(payload)) {
+      return null;
+    }
     const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');
     const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
     const bytes = Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
@@ -20,7 +45,7 @@ export async function decodePayload(payload) {
     const stream = new Blob([bytes])
       .stream()
       .pipeThrough(new DecompressionStream('deflate'));
-    const json = JSON.parse(await new Response(stream).text());
+    const json = JSON.parse(await readCapped(stream, MAX_INFLATED));
     if (!json || json.v !== 1 || typeof json.n !== 'string' || !json.n.trim()) {
       return null;
     }
