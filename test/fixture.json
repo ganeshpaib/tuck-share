@@ -1,0 +1,35 @@
+{
+  "payload": "eNpdzT1OwzAYBuCrWO_Qydhyg0TzqS2_CxJiKCNi-OwGJ2oSW41NgqociHNwMSSQGHqAR88JHyAj0YPwwKkSfePrBAkHWklE0OsJCYSX7PkoFuKuDaET9_z-_QWJDEKdUhxI647joDhG5UNQvtVsHSQYhF1mcZt9HhILs5TiqRls6CHxCSpW6soUpcQEuiiVKcpLCQ-CPebe1Zjl37_jrurFo6ubs3YcR5WaQwoH5UKnbyZt_tHabp9DEja0-7W22zNZTdzFtvplfG03ZuE2S8xv8w-YglNg",
+  "list": {
+    "name": "Date night",
+    "colorIndex": 8,
+    "places": [
+      {
+        "title": "Sugar & Bloom Café",
+        "url": "https://maps.app.goo.gl/abc",
+        "address": "Rua Augusta 12, Lisbon",
+        "lat": 38.7139,
+        "lng": -9.1394,
+        "userTags": [
+          "brunch"
+        ]
+      },
+      {
+        "title": "Ramen Ichi",
+        "url": "https://www.tiktok.com/@x/1",
+        "address": "",
+        "lat": null,
+        "lng": null,
+        "userTags": []
+      },
+      {
+        "title": "<b>Not bold</b>",
+        "url": "https://example.com/a?b=1&c=2",
+        "address": "",
+        "lat": null,
+        "lng": null,
+        "userTags": []
+      }
+    ]
+  }
+}
