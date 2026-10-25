@@ -91,9 +91,14 @@
 .pocket-front {
   z-index: 2; bottom: 0; width: calc(var(--pw) * 1.36); height: calc(var(--pw) * 0.4);
   background: var(--coral); border-radius: calc(var(--pw) * 0.16);
-  outline: 2.5px dashed rgba(17, 17, 17, 0.26); outline-offset: -12px;
   transform-origin: 50% 100%;
   animation: squish 520ms 1050ms ease-out both;
+}
+/* Stitching down the sides and along the bottom, none across the top, so the
+   phone goes into the pocket rather than standing on it. */
+.pocket-front::after {
+  content: ''; position: absolute; inset: 12px 12px 12px; border: 2.5px dashed rgba(17, 17, 17, 0.26);
+  border-top: none; border-radius: 0 0 calc(var(--pw) * 0.12) calc(var(--pw) * 0.12);
 }
 @keyframes squish { 0% { transform: none; } 35% { transform: scale(1.03, 0.9); } 100% { transform: none; } }
 
