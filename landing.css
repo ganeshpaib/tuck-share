@@ -319,6 +319,13 @@
 }
 .kinds-tabs button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 .kinds-tabs button[aria-selected="true"] { background: var(--ink); color: var(--cream); }
+/* While the chips take turns, a line under the chosen one shows when it moves on. */
+.kinds-tabs button { position: relative; overflow: hidden; }
+.kinds.auto .kinds-tabs.ticking button[aria-selected="true"]::after {
+  content: ''; position: absolute; left: 18px; right: 18px; bottom: 7px; height: 3px; border-radius: 3px;
+  background: var(--butter); transform-origin: left; animation: tick 4200ms linear both;
+}
+@keyframes tick { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 .kinds-panel {
   --tint: #BFE3D0;
@@ -347,6 +354,37 @@
 .kinds-phone .screen { background: var(--cream); }
 .ks { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms ease; padding: 9% 5% 0; }
 .ks.on { opacity: 1; }
+.ks:not(.on) * { animation: none !important; }
+/* Each screen's small entrance, every time its chip is chosen. */
+.ks.on .kpin { animation: pin 520ms cubic-bezier(.3, 1.6, .5, 1) both; }
+.ks.on .kpin:nth-of-type(2) { animation-delay: 120ms; }
+.ks.on .kpin:nth-of-type(3) { animation-delay: 240ms; }
+.ks.on .klist .krow, .ks.on .kgrid .kcard, .ks.on .kcats div { animation: rise-in 420ms cubic-bezier(.2, .9, .3, 1) both; }
+.ks.on .krow:nth-child(2), .ks.on .kcard:nth-child(2), .ks.on .kcats div:nth-child(2) { animation-delay: 90ms; }
+.ks.on .krow:nth-child(3), .ks.on .kcard:nth-child(3), .ks.on .kcats div:nth-child(3) { animation-delay: 180ms; }
+.ks.on .krow:nth-child(4), .ks.on .kcard:nth-child(4), .ks.on .kcats div:nth-child(4) { animation-delay: 270ms; }
+.ks.on .kcats div:nth-child(5) { animation-delay: 360ms; }
+.ks.on .kcats div:nth-child(6) { animation-delay: 450ms; }
+.ks-places.on .klist .krow { animation-delay: 420ms; }
+.ks-places.on .klist .krow:nth-child(2) { animation-delay: 510ms; }
+.ks-places.on .klist .krow:nth-child(3) { animation-delay: 600ms; }
+@keyframes rise-in { from { opacity: 0; transform: translateY(14px) scale(0.96); } to { opacity: 1; transform: none; } }
+.ks-recipes.on .kchips i.on { animation: pick 500ms 250ms ease both; }
+@keyframes pick { from { background: #fff; color: var(--ink); } to { background: var(--ink); color: var(--cream); } }
+.ks-recipes.on .kcard { animation-delay: 550ms; }
+.ks-recipes.on .kcard:nth-child(2) { animation-delay: 640ms; }
+.ks-recipes.on .kcard:nth-child(3) { animation-delay: 730ms; }
+.ks-recipes.on .kcard:nth-child(4) { animation-delay: 820ms; }
+.ksearch .typed { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; }
+.ks-search.on .typed { animation: type 700ms steps(7) 150ms both; }
+@keyframes type { from { max-width: 0; } to { max-width: 7.2ch; } }
+.ks-search.on .kcount { animation: rise-in 300ms 900ms both; }
+.ks-search.on .krow { animation-delay: 950ms; }
+.ks-search.on .krow:nth-child(2) { animation-delay: 1040ms; }
+.ks-search.on .krow:nth-child(3) { animation-delay: 1130ms; }
+.ks-search.on .krow:nth-child(4) { animation-delay: 1220ms; }
+.ks-sunday.on .knotif { animation: notif-in 560ms 450ms cubic-bezier(.2, 1.25, .4, 1) both; }
+@keyframes notif-in { from { opacity: 0; transform: translateY(-30px) scale(0.92); } to { opacity: 1; transform: none; } }
 .ks b { font-weight: 800; }
 .th-cafe { background: linear-gradient(160deg, #F4BFD8, #F9CFA6); }
 .th-pasta { background: radial-gradient(circle at 50% 50%, #F8E27A 0 34%, #F2EEE6 35%); }

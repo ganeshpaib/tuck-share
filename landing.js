@@ -79,8 +79,32 @@
   }
 
   // Ways to find it again: each chip shows its panel, its words and its screen.
-  var tabs = Array.prototype.slice.call(root.querySelectorAll('.kinds-tabs [role="tab"]'));
+  // While the section is on screen the chips take turns by themselves, until
+  // the visitor picks one: from then on it stays on their choice.
+  var kinds = root.querySelector('.kinds');
+  var strip = root.querySelector('.kinds-tabs');
+  var tabs = Array.prototype.slice.call(strip.querySelectorAll('[role="tab"]'));
   var panel = root.querySelector('.kinds-panel');
+  var KIND_MS = 4200;
+  var kindTimer = null;
+  var kindsVisible = false;
+  var picked = still;
+  function kindIndex() {
+    return tabs.findIndex(function (t) { return t.getAttribute('aria-selected') === 'true'; });
+  }
+  function nextKind() {
+    clearTimeout(kindTimer);
+    if (picked || !kindsVisible || document.hidden) return;
+    kindTimer = setTimeout(function () {
+      choose(tabs[(kindIndex() + 1) % tabs.length], false);
+      nextKind();
+    }, KIND_MS);
+  }
+  function stopKinds() {
+    picked = true;
+    clearTimeout(kindTimer);
+    kinds.classList.remove('auto');
+  }
   function choose(tab, focus) {
     var k = tab.getAttribute('data-k');
     tabs.forEach(function (t) {
@@ -90,23 +114,46 @@
       document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
     });
     panel.setAttribute('data-k', k);
-    panel.querySelectorAll('.ks').forEach(function (s) {
-      s.classList.toggle('on', s.getAttribute('data-k') === k);
-    });
-    if (focus) {
-      tab.focus();
-      tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    // Off and on again, so the screen and the chip's timer start over.
+    panel.querySelectorAll('.ks').forEach(function (s) { s.classList.remove('on'); });
+    strip.classList.remove('ticking');
+    void panel.offsetWidth;
+    panel.querySelector('.ks[data-k="' + k + '"]').classList.add('on');
+    strip.classList.add('ticking');
+    // Keep the chosen chip in view inside its row, without scrolling the page.
+    var left = tab.offsetLeft - strip.offsetLeft;
+    if (left < strip.scrollLeft || left + tab.offsetWidth > strip.scrollLeft + strip.clientWidth) {
+      strip.scrollTo({ left: left - 16, behavior: still ? 'auto' : 'smooth' });
     }
+    if (focus) tab.focus();
   }
   tabs.forEach(function (t, n) {
-    t.addEventListener('click', function () { choose(t, false); });
+    t.addEventListener('click', function () { stopKinds(); choose(t, false); });
     t.addEventListener('keydown', function (e) {
       var to = e.key === 'ArrowRight' ? n + 1 : e.key === 'ArrowLeft' ? n - 1 : null;
       if (to === null) return;
       e.preventDefault();
+      stopKinds();
       choose(tabs[(to + tabs.length) % tabs.length], true);
     });
   });
+  if (!picked && 'IntersectionObserver' in window) {
+    kinds.classList.add('auto');
+    new IntersectionObserver(function (entries) {
+      kindsVisible = entries[0].isIntersecting;
+      if (kindsVisible && !picked) {
+        // Start the shown chip's timer from the beginning as it comes into view.
+        choose(tabs[kindIndex()], false);
+        nextKind();
+      } else {
+        clearTimeout(kindTimer);
+      }
+    }, { threshold: 0.4 }).observe(panel);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden && kindsVisible && !picked) { choose(tabs[kindIndex()], false); nextKind(); }
+      else clearTimeout(kindTimer);
+    });
+  }
 
   // Install buttons for the phone in the visitor's hand.
   var ua = navigator.userAgent;
