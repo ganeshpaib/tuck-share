@@ -13,6 +13,10 @@
   --paper: #FFFDF8;
   --pw: clamp(248px, 68vw, 300px);
   --dur: 4600ms;
+  /* One motion curve: exponential ease-out, settles without overshoot. */
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  /* Secondary text on butter: a deep shade of the butter itself, not gray. */
+  --on-butter: #5C4A0E;
   /* Type: the app's own fonts, Outfit throughout and Instrument Serif italic as its accent. */
   --serif: 'Instrument Serif', Georgia, serif;
   color: var(--ink);
@@ -21,7 +25,9 @@
   position: relative;
 }
 .is-share .landing { display: none; }
-.landing a { color: inherit; }
+.landing a { color: inherit; text-underline-offset: 0.2em; }
+.landing ::selection { background: var(--ink); color: var(--butter); }
+.landing { caret-color: var(--ink); }
 .landing :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 12px; }
 .landing h2, .landing h3, .landing p, .landing ul, .landing ol { margin: 0; }
 .landing h2 { font-size: clamp(32px, 4.6vw, 54px); line-height: 1; letter-spacing: -0.035em; font-weight: 900; text-wrap: balance; }
@@ -57,7 +63,7 @@
 .hero-text { grid-area: text; }
 .stage { grid-area: stage; }
 
-.headline { margin: 0 0 20px; font-weight: 900; font-size: clamp(46px, 6.3vw, 88px); line-height: 0.94; letter-spacing: -0.05em; }
+.headline { margin: 0 0 20px; font-weight: 900; font-size: clamp(46px, 6.3vw, 88px); line-height: 0.94; letter-spacing: -0.04em; }
 .headline .line { display: block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; }
 .headline .line > span { display: inline-block; animation: rise 900ms cubic-bezier(.2, .8, .2, 1) both; }
 .headline .line + .line > span { animation-delay: 120ms; }
@@ -68,18 +74,21 @@
 .lede { max-width: 34em; font-size: clamp(17px, 1.5vw, 19px) !important; color: #2A2620; }
 .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
 .btn {
+  transition: transform 160ms ease, background 160ms ease;
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   min-height: 56px; padding: 0 26px; border-radius: 999px;
   font: 800 17px/1 'Outfit', system-ui, sans-serif; text-decoration: none;
-  transition: transform 160ms ease;
 }
 .btn:active { transform: scale(0.97); }
+.btn-ink:hover { background: #2B2721; }
+.btn-line:hover, .top-get:hover, .top-insta:hover { background: rgba(17, 17, 17, 0.07); }
+.top-get, .top-insta { transition: background 160ms ease; }
 .btn-ink { background: var(--ink); color: var(--cream) !important; }
 .btn-line { border: 2px solid var(--ink); }
 .btn-soon { background: rgba(17, 17, 17, 0.08); cursor: default; }
 .btn.big { min-height: 64px; padding: 0 34px; font-size: 19px; }
 .android { width: 22px; height: 22px; fill: var(--butter); }
-.fine { margin-top: 14px !important; font-size: 14px !important; color: var(--muted); }
+.fine { margin-top: 14px !important; font-size: 14px !important; color: var(--on-butter); }
 
 /* ---- The phone in the pocket ----------------------------------------- */
 .stage {
@@ -115,7 +124,7 @@
   width: var(--pw); aspect-ratio: 300 / 620;
   background: var(--ink); border-radius: calc(var(--pw) * 0.16);
   padding: calc(var(--pw) * 0.035);
-  animation: drop 1000ms 350ms cubic-bezier(.25, 1.35, .45, 1) both;
+  animation: drop 1000ms 350ms var(--ease-out) both;
 }
 @keyframes drop {
   from { transform: translateY(-110px) rotate(-4deg); opacity: 0; }
@@ -189,7 +198,7 @@
   position: absolute; top: 16%; left: 50%; display: flex; align-items: center; gap: 0.5em; white-space: nowrap;
   padding: 0.55em 1em 0.55em 0.55em; border-radius: 999px; background: var(--ink); color: var(--cream); font-weight: 700; font-size: 0.92em;
   opacity: 0; transform: translate(-50%, -80%) scale(0.9);
-  animation: toast 500ms 2950ms cubic-bezier(.2, 1.3, .4, 1) both;
+  animation: toast 500ms 2950ms var(--ease-out) both;
 }
 .toast img { width: 1.7em; height: 1.7em; border-radius: 0.45em; }
 /* Hidden until TuckMe is tapped, then it drops in. */
@@ -238,7 +247,7 @@
   position: absolute; left: 5%; right: 5%; bottom: 14%; padding: 0.8em 1em; border-radius: 0.9em;
   background: var(--ink); color: var(--cream); font-weight: 700; font-size: 0.85em;
   transform: translateY(40%); opacity: 0;
-  animation: snack 380ms 2150ms cubic-bezier(.2, 1.2, .4, 1) both;
+  animation: snack 380ms 2150ms var(--ease-out) both;
 }
 @keyframes snack { to { transform: none; opacity: 1; } }
 
@@ -252,13 +261,13 @@
   position: absolute; width: 7cqw; height: 7cqw; margin: -7cqw 0 0 -3.5cqw;
   background: var(--ink); border-radius: 50% 50% 50% 0; rotate: -45deg;
   border: 1.6cqw solid var(--paper); box-sizing: content-box;
-  animation: pin 520ms cubic-bezier(.3, 1.6, .5, 1) both;
+  animation: pin 520ms var(--ease-out) both;
 }
 .p1 { left: 24%; top: 30%; animation-delay: 250ms; }
 .p2 { left: 72%; top: 24%; animation-delay: 420ms; background: #7C6FD6; }
 .p4 { left: 30%; top: 58%; animation-delay: 590ms; background: #E7896E; }
 .p3 { left: 64%; top: 48%; animation-delay: 760ms; background: #E7896E; }
-.pin.hot { width: 9cqw; height: 9cqw; margin: -9cqw 0 0 -4.5cqw; animation: pin 520ms 760ms cubic-bezier(.3, 1.6, .5, 1) both, hop 600ms 1500ms ease-in-out both; }
+.pin.hot { width: 9cqw; height: 9cqw; margin: -9cqw 0 0 -4.5cqw; animation: pin 520ms 760ms var(--ease-out) both, hop 600ms 1500ms ease-in-out both; }
 @keyframes pin { from { transform: translate(40%, -140%); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes hop { 50% { transform: translate(18%, -18%); } }
 .you { position: absolute; left: 52%; top: 56%; width: 4.4cqw; height: 4.4cqw; margin: -2.2cqw; border-radius: 50%; background: #3B82F6; border: 1.2cqw solid #fff; box-sizing: content-box; }
@@ -267,7 +276,7 @@
 .place-card {
   position: absolute; left: 4%; right: 4%; bottom: 14%;
   display: flex; align-items: center; gap: 0.6em; padding: 0.6em; border-radius: 1.2em; background: var(--paper);
-  animation: up 480ms 1750ms cubic-bezier(.2, 1.2, .4, 1) both;
+  animation: up 480ms 1750ms var(--ease-out) both;
 }
 .place-card .go { flex: none; font-weight: 800; font-size: 0.72em; padding: 0.6em 0.8em; border-radius: 999px; background: var(--ink); color: var(--cream); }
 
@@ -283,14 +292,14 @@
 .chat-old .from-me { justify-self: end; background: #3B7BF6; color: #fff; border-bottom-right-radius: 0.35em; }
 .link-msg {
   align-self: flex-start; background: #fff; border-bottom-left-radius: 0.35em; font-weight: 500;
-  animation: from-left 500ms 400ms cubic-bezier(.2, 1.2, .4, 1) both;
+  animation: from-left 500ms 400ms var(--ease-out) both;
 }
 .link-msg u { color: #2F6BDB; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 @keyframes from-left { from { transform: translateX(-40%) scale(0.8); opacity: 0; } to { transform: none; opacity: 1; } }
 /* Back in the chat: the friend says which place they picked, with a heart for TuckMe. */
 .reply {
   align-self: flex-end; background: #3B7BF6; color: #fff; border-bottom-right-radius: 0.35em;
-  animation: reply-in 520ms 8100ms cubic-bezier(.2, 1.2, .4, 1) both;
+  animation: reply-in 520ms 8100ms var(--ease-out) both;
 }
 @keyframes reply-in {
   from { opacity: 0; transform: translateX(30%) scale(0.85); margin-top: -3.2em; }
@@ -335,7 +344,7 @@
 .sl-pick:nth-child(3) i::after, .sl-pick:nth-child(3) i::before { animation-delay: 5500ms; }
 @keyframes tick-on { to { opacity: 1; transform: none; } }
 .sl-save { position: absolute; left: 5%; right: 5%; bottom: 16%; padding: 0.85em; border-radius: 999px; background: var(--ink); color: var(--cream); text-align: center; font-weight: 800; font-size: 0.9em; }
-.sl-app .snack { bottom: 27%; animation: snack 420ms 6600ms cubic-bezier(.2, 1.2, .4, 1) both; }
+.sl-app .snack { bottom: 27%; animation: snack 420ms 6600ms var(--ease-out) both; }
 .t-save { left: 50%; top: 80%; animation: tap 700ms 6100ms ease-out both; }
 
 /* ---- How it works: one row per step, card and words taking turns ---- */
@@ -381,6 +390,7 @@
   padding: 12px 18px; border-radius: 999px; background: var(--k); font-weight: 800; font-size: 16px;
   transition: background 200ms ease, color 200ms ease;
 }
+.kinds-tabs button:not([aria-selected="true"]):hover { filter: brightness(0.95); }
 .kinds-tabs button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 .kinds-tabs button[aria-selected="true"] { background: var(--ink); color: var(--cream); }
 /* While the chips take turns, a line under the chosen one shows when it moves on. */
@@ -419,7 +429,7 @@
 .ks.on { opacity: 1; }
 .ks:not(.on) * { animation: none !important; }
 /* Each screen's small entrance, every time its chip is chosen. */
-.ks.on .kpin { animation: pin 520ms cubic-bezier(.3, 1.6, .5, 1) both; }
+.ks.on .kpin { animation: pin 520ms var(--ease-out) both; }
 .ks.on .kpin:nth-of-type(2) { animation-delay: 120ms; }
 .ks.on .kpin:nth-of-type(3) { animation-delay: 240ms; }
 .ks.on .klist .krow, .ks.on .kgrid .kcard, .ks.on .kcats div { animation: rise-in 420ms cubic-bezier(.2, .9, .3, 1) both; }
@@ -446,7 +456,7 @@
 .ks-search.on .krow:nth-child(2) { animation-delay: 1040ms; }
 .ks-search.on .krow:nth-child(3) { animation-delay: 1130ms; }
 .ks-search.on .krow:nth-child(4) { animation-delay: 1220ms; }
-.ks-sunday.on .knotif { animation: notif-in 560ms 450ms cubic-bezier(.2, 1.25, .4, 1) both; }
+.ks-sunday.on .knotif { animation: notif-in 560ms 450ms var(--ease-out) both; }
 @keyframes notif-in { from { opacity: 0; transform: translateY(-30px) scale(0.92); } to { opacity: 1; transform: none; } }
 .ks b { font-weight: 800; }
 .th-cafe { background: linear-gradient(160deg, #F4BFD8, #F9CFA6); }
@@ -522,7 +532,7 @@
 .install b { display: block; font-size: 19px; }
 .install span { display: block; color: #3A342B; max-width: 30em; }
 .get-cta { margin-top: 28px; }
-.get .fine { color: #4A4338; }
+.get .fine { color: var(--on-butter); }
 .aside { margin-top: 18px !important; padding: 14px 18px; border-radius: 18px; background: rgba(255, 253, 248, 0.7); max-width: 34em; font-weight: 500; font-size: 16px !important; }
 
 /* The install, start to finish, in the same pockets as every other phone. */
@@ -545,7 +555,7 @@
   position: absolute; left: 4%; right: 4%; bottom: 15%;
   display: flex; align-items: center; gap: 0.6em; padding: 0.6em 0.7em; border-radius: 1em; background: #fff;
   box-shadow: 0 0.4em 1.2em rgba(0, 0, 0, 0.12); font-size: 0.85em;
-  animation: up 500ms 400ms cubic-bezier(.2, 1.2, .4, 1) both;
+  animation: up 500ms 400ms var(--ease-out) both;
 }
 .in-file { flex: none; width: 2.2em; height: 2.2em; border-radius: 0.6em; background: #3B6F5C; }
 .in-dl em { font-style: normal; font-weight: 800; color: #3B6F5C; padding: 0.3em 0.4em; }
@@ -554,7 +564,7 @@
   position: absolute; left: 7%; right: 7%; top: 24%;
   padding: 1.3em 1.1em 1em; border-radius: 1.5em; background: #FFFDF8;
   display: grid; justify-items: center; text-align: center; gap: 0.35em;
-  opacity: 0; animation: pop-in 420ms 1800ms cubic-bezier(.2, 1.3, .4, 1) both, fade-out 400ms 4700ms forwards;
+  opacity: 0; animation: pop-in 420ms 1800ms var(--ease-out) both, fade-out 400ms 4700ms forwards;
 }
 @keyframes pop-in { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: none; } }
 .gp-dialog img { width: 3.4em; height: 3.4em; border-radius: 0.9em; }
@@ -578,7 +588,7 @@
 .in-apps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1em 0.4em; }
 .in-apps span { display: grid; justify-items: center; gap: 0.3em; font-size: 0.62em; font-weight: 600; color: #2A2620; }
 .in-apps i, .in-apps img { width: 4.6em; height: 4.6em; border-radius: 1.3em; display: block; }
-.in-tuck { animation: icon-pop 600ms 5200ms cubic-bezier(.3, 1.6, .5, 1) both; }
+.in-tuck { animation: icon-pop 600ms 5200ms var(--ease-out) both; }
 @keyframes icon-pop { from { opacity: 0; transform: scale(0.3); } to { opacity: 1; transform: none; } }
 .t-open { left: 87%; top: 82%; animation: tap 700ms 1200ms ease-out both; }
 .t-install { left: 76.5%; top: 47%; animation: tap 700ms 2900ms ease-out both; }
@@ -600,10 +610,10 @@
   width: min(92vw, 440px); padding: 14px 18px; border-radius: 20px;
   background: var(--ink); color: var(--cream); font-size: 15px; line-height: 1.4;
   transform: translate(-50%, calc(100% + 40px)); visibility: hidden;
-  transition: transform 420ms cubic-bezier(.2, 1.2, .4, 1), visibility 0s 420ms;
+  transition: transform 420ms var(--ease-out), visibility 0s 420ms;
 }
 .dl-toast b { color: var(--butter); }
-.dl-toast.show { transform: translate(-50%, 0); visibility: visible; transition: transform 420ms cubic-bezier(.2, 1.2, .4, 1); }
+.dl-toast.show { transform: translate(-50%, 0); visibility: visible; transition: transform 420ms var(--ease-out); }
 
 /* ---- Wider screens ---------------------------------------------------- */
 @media (min-width: 720px) {
