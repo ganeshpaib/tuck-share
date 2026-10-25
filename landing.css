@@ -326,19 +326,19 @@
 .t-save { left: 50%; top: 80%; animation: tap 700ms 6100ms ease-out both; }
 
 /* ---- How it works: one row per step, card and words taking turns ---- */
-.how { max-width: 1180px; margin: 0 auto; padding: 64px 20px 0; }
+.how { max-width: 1180px; margin: 0 auto; padding: 88px 20px 0; }
 .how h2 { margin-bottom: 8px; }
-.how-rows { list-style: none; padding: 0; display: grid; gap: 16px; margin-top: 24px; }
-.how-row { display: grid; align-items: center; border-radius: 34px; background: var(--butter); overflow: hidden; }
+.how-rows { list-style: none; padding: 0; display: grid; gap: 56px; margin-top: 32px; }
+.how-row { display: grid; gap: 22px; align-items: center; }
 .how-art {
   /* The same phone in the same pockets as the top of the page, on the same butter. */
-  --pw: 210px;
-  position: relative; display: grid; justify-items: center;
-  padding: 28px 0 calc(var(--pw) * 0.14 + 22px);
+  --pw: 230px;
+  position: relative; overflow: hidden; border-radius: 34px; background: var(--butter);
+  display: grid; justify-items: center;
+  padding: 36px 0 calc(var(--pw) * 0.14 + 28px);
 }
-.how-art .pocket-back { bottom: calc(var(--pw) * 0.1 + 22px); }
-.how-art .pocket-front { bottom: 22px; animation: none; }
-.how-text { padding: 0 24px 28px; }
+.how-art .pocket-back { bottom: calc(var(--pw) * 0.1 + 28px); }
+.how-art .pocket-front { bottom: 28px; animation: none; }
 .how-phone {
   position: relative; z-index: 1;
   width: var(--pw); aspect-ratio: 300 / 620;
@@ -347,22 +347,21 @@
 .how-phone .scene { transition: none; }
 .how-n {
   display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
-  background: var(--ink); color: var(--butter); font-weight: 900; font-size: 19px; margin-bottom: 14px;
+  background: var(--ink); color: var(--butter); font-weight: 900; font-size: 19px; margin-bottom: 18px;
 }
-.how-text h3 { font-size: clamp(26px, 2.6vw, 34px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 14px; text-wrap: balance; }
-.how-text p { max-width: 26em; color: #2A2620; font-size: 16px !important; }
+.how-text h3 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 14px; text-wrap: balance; }
+.how-text p { max-width: 26em; color: #2A2620; font-size: 18px !important; }
 
 /* Each row comes in once, as it scrolls into view; its phone starts playing then. */
 .how-row .how-art, .how-row .how-text { transition: opacity 700ms ease, transform 700ms cubic-bezier(.2, .8, .2, 1); }
-.js-reveal .how-row:not(.seen) .how-art { opacity: 0; transform: translateY(30px) scale(0.97); }
+.js-reveal .how-row:not(.seen) .how-art { opacity: 0; transform: translateY(40px) scale(0.97); }
 .js-reveal .how-row:not(.seen) .how-text { opacity: 0; transform: translateY(24px); }
 .how-row .how-text { transition-delay: 120ms; }
 
 /* ---- Ways to find it again: chips switch one panel and its phone ------ */
-.kinds { max-width: 1180px; margin: 0 auto; padding: 56px 20px 0; }
+.kinds { max-width: 1180px; margin: 0 auto; padding: 72px 20px 24px; }
 .kinds h2 { margin-bottom: 22px; }
-.kinds-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 18px; margin: 0 -2px; scrollbar-width: none; }
-.kinds-side { min-width: 0; }
+.kinds-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 10px; margin: 0 -2px; scrollbar-width: none; }
 .kinds-tabs::-webkit-scrollbar { display: none; }
 .kinds-tabs button {
   all: unset; box-sizing: border-box; flex: none; cursor: pointer;
@@ -594,20 +593,16 @@
 }
 @media (min-width: 860px) {
   .kinds-panel { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 40px 64px 12px; }
-  /* The chips sit in the panel, the chosen one's words under them. */
-  .kinds-tabs { flex-wrap: wrap; overflow: visible; padding: 0 0 28px; margin: 0; }
   .kinds-art { --pw: 250px; }
   .kinds-copy { padding-bottom: 0; }
   .kinds-copy p { font-size: 19px !important; }
-  .how-row { grid-template-columns: auto 1fr; column-gap: 4px; padding-left: 8px; }
-  /* Wide enough for the front pocket, which is wider than the phone. */
-  .how-art { width: calc(var(--pw) * 1.42); }
-  .how-text { padding: 24px 28px 24px 4px; }
+  .how-row { grid-template-columns: 1fr 1fr; gap: 64px; }
+  .how-row:nth-child(even) .how-art { order: 2; }
+  .how-art { --pw: 250px; padding-top: 44px; }
   .get-box { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 48px 64px 20px; }
   .get-art { --pw: 250px; }
 }
 @media (min-width: 980px) {
-  .how-rows { grid-template-columns: 1fr 1fr; }
   .hero {
     grid-template-columns: 1.08fr 0.92fr; column-gap: 56px; row-gap: 30px; align-items: start;
     grid-template-areas: 'text stage';
