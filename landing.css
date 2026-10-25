@@ -573,6 +573,13 @@
 .foot { max-width: 1180px; margin: 0 auto; padding: 28px 20px 40px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border-top: 2px solid rgba(17, 17, 17, 0.08); font-size: 15px; }
 .foot .mark { font-size: 18px; }
 .foot .mark img { border-radius: 8px; }
+.foot-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.foot-links a {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px;
+  background: var(--paper); border: 2px solid rgba(17, 17, 17, 0.1); font-weight: 700; text-decoration: none;
+}
+.foot-links a:hover { border-color: var(--ink); }
+.foot-links svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* After a tap on Download: what happens next. */
 .dl-toast {
