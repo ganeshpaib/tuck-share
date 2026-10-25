@@ -283,13 +283,16 @@
 .how-rows { list-style: none; padding: 0; display: grid; gap: 56px; margin-top: 32px; }
 .how-row { display: grid; gap: 22px; align-items: center; }
 .how-art {
-  position: relative; overflow: hidden; border-radius: 34px; background: var(--art);
-  display: grid; justify-items: center; padding-top: 34px;
-  /* Down to where the scenes stop: the bottom strip of each screen stays empty. */
-  height: calc(34px + var(--pw) * 2.067 * 0.87);
+  /* The same phone in the same pockets as the top of the page, on the same butter. */
+  --pw: 230px;
+  position: relative; overflow: hidden; border-radius: 34px; background: var(--butter);
+  display: grid; justify-items: center;
+  padding: 36px 0 calc(var(--pw) * 0.14 + 28px);
 }
-.how-art { --pw: 230px; }
+.how-art .pocket-back { bottom: calc(var(--pw) * 0.1 + 28px); }
+.how-art .pocket-front { bottom: 28px; animation: none; }
 .how-phone {
+  position: relative; z-index: 1;
   width: var(--pw); aspect-ratio: 300 / 620;
   background: var(--ink); border-radius: calc(var(--pw) * 0.16); padding: calc(var(--pw) * 0.035);
 }
@@ -511,7 +514,7 @@
   .kinds-copy p { font-size: 19px !important; }
   .how-row { grid-template-columns: 1.1fr 0.9fr; gap: 64px; }
   .how-row:nth-child(even) .how-art { order: 2; }
-  .how-art { --pw: 250px; padding-top: 44px; height: calc(44px + var(--pw) * 2.067 * 0.87); }
+  .how-art { --pw: 250px; padding-top: 44px; }
   .get-box { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 56px 64px 0; }
   .get-copy { padding-bottom: 56px; }
   .get-phone { margin-top: 0; }

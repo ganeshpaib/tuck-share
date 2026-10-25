@@ -60,22 +60,34 @@
   }
 
   // How it works: each row comes in as it scrolls into view, and its phone
-  // plays that step once.
-  var rows = root.querySelectorAll('.how-row');
-  function reveal(row) {
-    row.classList.add('seen');
-    row.querySelector('.scene').classList.add('on');
+  // plays that step over and over while the row is on screen.
+  var rows = Array.prototype.slice.call(root.querySelectorAll('.how-row'));
+  function replay(row) {
+    var scene = row.querySelector('.scene');
+    scene.classList.remove('on');
+    void scene.offsetWidth;
+    scene.classList.add('on');
   }
   if (still || !('IntersectionObserver' in window)) {
-    rows.forEach(reveal);
+    rows.forEach(function (row) { row.classList.add('seen'); row.querySelector('.scene').classList.add('on'); });
   } else {
     root.classList.add('js-reveal');
-    var watch = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { reveal(e.target); watch.unobserve(e.target); }
+    rows.forEach(function (row) {
+      var loop = null;
+      function stop() { clearInterval(loop); loop = null; }
+      function start() {
+        if (loop || document.hidden) return;
+        replay(row);
+        loop = setInterval(function () { replay(row); }, STEP_MS);
+      }
+      new IntersectionObserver(function (entries) {
+        row.inView = entries[0].isIntersecting;
+        if (row.inView) { row.classList.add('seen'); start(); } else { stop(); }
+      }, { threshold: 0.35 }).observe(row);
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) stop(); else if (row.inView) start();
       });
-    }, { threshold: 0.35 });
-    rows.forEach(function (r) { watch.observe(r); });
+    });
   }
 
   // Ways to find it again: each chip shows its panel, its words and its screen.
