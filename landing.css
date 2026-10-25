@@ -13,6 +13,11 @@
   --paper: #FFFDF8;
   --pw: clamp(248px, 68vw, 300px);
   --dur: 4600ms;
+  /* Type: the app's own pair for the headline, a marker hand for section
+     headings, a quirky grotesque for titles, Outfit (the app's font) for the rest. */
+  --hand: 'Caveat Brush', 'Marker Felt', 'Comic Sans MS', cursive;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --title: 'Bricolage Grotesque', 'Outfit', system-ui, sans-serif;
   color: var(--ink);
   color-scheme: light;
   overflow-x: clip;
@@ -22,8 +27,8 @@
 .landing a { color: inherit; }
 .landing :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 12px; }
 .landing h2, .landing h3, .landing p, .landing ul, .landing ol { margin: 0; }
-.landing h2 { font-size: clamp(32px, 4.6vw, 54px); line-height: 1; letter-spacing: -0.035em; font-weight: 900; text-wrap: balance; }
-.landing h3 { font-size: 22px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 800; }
+.landing h2 { font-family: var(--hand); font-size: clamp(42px, 5.8vw, 72px); line-height: 0.98; letter-spacing: 0; font-weight: 400; text-wrap: balance; }
+.landing h3 { font-family: var(--title); font-size: 22px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 800; }
 .landing p, .install span { font-size: 17px; line-height: 1.5; }
 
 /* ---- Top bar ---------------------------------------------------------- */
@@ -56,6 +61,8 @@
 .headline .line { display: block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; }
 .headline .line > span { display: inline-block; animation: rise 900ms cubic-bezier(.2, .8, .2, 1) both; }
 .headline .line + .line > span { animation-delay: 120ms; }
+/* As on the app's Home: the second line in Instrument Serif italic, which sets small, so larger. */
+.headline .line + .line { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.12em; letter-spacing: -0.02em; line-height: 0.95; }
 @keyframes rise { from { transform: translateY(105%); } to { transform: none; } }
 
 .lede { max-width: 34em; font-size: clamp(17px, 1.5vw, 19px) !important; color: #2A2620; }
@@ -343,9 +350,9 @@
 .how-phone .scene { transition: none; }
 .how-n {
   display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
-  background: var(--ink); color: var(--butter); font-weight: 900; font-size: 19px; margin-bottom: 18px;
+  background: var(--ink); color: var(--butter); font-family: var(--hand); font-weight: 400; font-size: 26px; margin-bottom: 18px;
 }
-.how-text h3 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1; letter-spacing: -0.035em; font-weight: 900; margin-bottom: 14px; text-wrap: balance; }
+.how-text h3 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 14px; text-wrap: balance; }
 .how-text p { max-width: 26em; color: #2A2620; font-size: 18px !important; }
 
 /* Each row comes in once, as it scrolls into view; its phone starts playing then. */
@@ -380,7 +387,7 @@
   display: grid; gap: 8px; overflow: hidden;
   padding: 30px 24px 8px;
 }
-.kinds-copy h3 { font-size: clamp(26px, 3.2vw, 40px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 900; margin-bottom: 12px; text-wrap: balance; }
+.kinds-copy h3 { font-size: clamp(26px, 3.2vw, 40px); line-height: 1.04; letter-spacing: -0.025em; font-weight: 800; margin-bottom: 12px; text-wrap: balance; }
 .kinds-copy p { max-width: 28em; color: #2A2620; }
 .kinds-copy [role="tabpanel"]:not([hidden]) { animation: copy-in 320ms ease both; }
 @keyframes copy-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -486,7 +493,7 @@
 .private h2 { color: var(--butter); max-width: 11em; }
 .private ul { list-style: none; padding: 0; margin-top: 28px; display: grid; gap: 20px; }
 .private li { font-size: 17px; line-height: 1.5; color: rgba(251, 243, 226, 0.82); max-width: 30em; }
-.private li b { display: block; color: var(--cream); font-size: 20px; margin-bottom: 2px; }
+.private li b { font-family: var(--title); display: block; color: var(--cream); font-size: 20px; margin-bottom: 2px; }
 
 /* ---- Get it ----------------------------------------------------------- */
 .get { max-width: 1180px; margin: 0 auto; padding: 72px 20px 24px; }
@@ -500,9 +507,9 @@
 .install li::before {
   content: counter(step); position: absolute; left: 0; top: 0;
   width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
-  background: var(--ink); color: var(--butter); font-weight: 900; font-size: 19px;
+  background: var(--ink); color: var(--butter); font-family: var(--hand); font-weight: 400; font-size: 26px;
 }
-.install b { display: block; font-size: 19px; }
+.install b { font-family: var(--title); display: block; font-size: 20px; }
 .install span { display: block; color: #3A342B; max-width: 30em; }
 .get-cta { margin-top: 28px; }
 .get .fine { color: #4A4338; }
