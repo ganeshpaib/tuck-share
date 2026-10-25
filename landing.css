@@ -254,29 +254,58 @@
 }
 .place-card .go { flex: none; font-weight: 800; font-size: 0.72em; padding: 0.6em 0.8em; border-radius: 999px; background: var(--ink); color: var(--cream); }
 
-/* 4. Send a list */
-.s-send { background: #F2EEE6; padding: 8% 4% 31%; display: flex; flex-direction: column; justify-content: flex-end; gap: 0.7em; }
-.s-send .chat-head { margin-bottom: auto; }
-.chat-head { display: flex; align-items: center; gap: 0.55em; padding-bottom: 0.7em; border-bottom: 1px solid rgba(17, 17, 17, 0.08); margin-bottom: 0.3em; }
+/* 4. Send a category: the friend gets the link, opens the page, keeps the places */
+.s-send { background: #F2EEE6; padding: 8% 4% 0; }
+.chat-head { display: flex; align-items: center; gap: 0.55em; padding-bottom: 0.7em; border-bottom: 1px solid rgba(17, 17, 17, 0.08); }
 .chat-av { display: grid; place-items: center; width: 2em; height: 2em; border-radius: 50%; background: var(--lav); font-weight: 800; font-size: 0.9em; }
-.bubble { max-width: 82%; border-radius: 1.2em; padding: 0.6em 0.8em; font-size: 0.92em; }
-.bubble.mine { align-self: flex-end; background: #3B7BF6; color: #fff; line-height: 1.35; border-bottom-right-radius: 0.35em; animation: from-right 480ms 300ms cubic-bezier(.2, 1.2, .4, 1) both; }
-.bubble.theirs { align-self: flex-start; background: #fff; border-bottom-left-radius: 0.35em; font-weight: 500; animation: from-left 420ms 2650ms cubic-bezier(.2, 1.2, .4, 1) both; }
-@keyframes from-right { from { transform: translateX(60%) scale(0.8); opacity: 0; } to { transform: none; opacity: 1; } }
+.bubble { max-width: 82%; border-radius: 1.2em; padding: 0.6em 0.8em; font-size: 0.92em; line-height: 1.35; }
+.chat-old { display: grid; gap: 0.5em; margin-top: 0.9em; }
+.chat-old .from-sam { justify-self: start; background: #fff; border-bottom-left-radius: 0.35em; }
+.chat-old .from-me { justify-self: end; background: #3B7BF6; color: #fff; border-bottom-right-radius: 0.35em; }
+.link-msg {
+  position: absolute; left: 4%; bottom: 18%; background: #fff; border-bottom-left-radius: 0.35em; font-weight: 500;
+  animation: from-left 420ms 250ms cubic-bezier(.2, 1.2, .4, 1) both;
+}
+.link-msg u { color: #2F6BDB; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 @keyframes from-left { from { transform: translateX(-40%) scale(0.8); opacity: 0; } to { transform: none; opacity: 1; } }
-.bubble.mine u { text-decoration-thickness: 1px; text-underline-offset: 2px; }
-.link-card { width: 62cqw; overflow: hidden; border-radius: 0.95em; background: var(--paper); }
-.lc-band { background: var(--coral); padding: 0.7em 0.8em; }
-.lc-band b { font-size: 1.15em; letter-spacing: -0.02em; }
-.lc-band small { color: #3C2F2A; }
-.lc-row { padding: 0.5em 0.8em; font-weight: 700; font-size: 0.85em; border-bottom: 1px solid rgba(17, 17, 17, 0.06); }
-.lc-url { padding: 0.45em 0.8em 0.55em; font-size: 0.72em; color: var(--muted); }
-.typing { align-self: flex-start; display: flex; gap: 0.25em; padding: 0.75em 0.9em; border-radius: 1.2em; background: #fff; overflow: hidden; animation: blink-in 1300ms 1400ms both; }
-.typing i { width: 0.45em; height: 0.45em; border-radius: 50%; background: #9A938A; animation: dot 900ms ease-in-out infinite; }
-.typing i:nth-child(2) { animation-delay: 150ms; }
-.typing i:nth-child(3) { animation-delay: 300ms; }
-@keyframes blink-in { 0% { opacity: 0; } 10%, 90% { opacity: 1; } 100% { opacity: 0; height: 0; padding-block: 0; margin-block: -0.35em; } }
-@keyframes dot { 50% { transform: translateY(-40%); } }
+.t-link { left: 48%; top: 78.5%; animation: tap 600ms 1050ms ease-out both; }
+
+/* The shared page, as the browser opens it. */
+.sl-web { position: absolute; inset: 0; background: var(--cream); transform: translateX(100%); animation: slide-in 380ms 1500ms cubic-bezier(.2, .9, .3, 1) both; }
+@keyframes slide-in { to { transform: none; } }
+.sl-web .in-url { margin: 9% 5% 0.6em; }
+.sl-band { margin: 0 0 0.6em; padding: 0.7em 6% 0.9em; background: #F6B9A8; border-radius: 0 0 1.2em 1.2em; display: grid; gap: 0.1em; }
+.sl-brand { display: flex; align-items: center; gap: 0.35em; font-weight: 800; font-size: 0.75em; margin-bottom: 0.3em; }
+.sl-brand img { width: 1.5em; height: 1.5em; border-radius: 0.4em; }
+.sl-band b { font-size: 1.6em; letter-spacing: -0.03em; line-height: 1.05; }
+.sl-band small { color: #3C2F2A; }
+.sl-rows { display: grid; gap: 0.4em; padding: 0 4%; }
+.sl-row, .sl-pick { display: flex; align-items: center; gap: 0.5em; padding: 0.55em 0.7em; border-radius: 0.9em; background: #fff; font-size: 0.85em; }
+.sl-row em { flex: none; font-style: normal; font-weight: 800; font-size: 0.85em; }
+.sl-keep { margin: 0.7em 4% 0; padding: 0.8em; border-radius: 1em; background: var(--butter); font-size: 0.85em; }
+.sl-keep div { display: flex; gap: 0.4em; margin-top: 0.5em; }
+.sl-keep span { padding: 0.5em 0.8em; border-radius: 999px; font-weight: 800; font-size: 0.85em; }
+.sl-keep .dark { background: var(--ink); color: var(--cream); }
+.sl-keep .light { border: 1.5px solid var(--ink); }
+.t-open-app { left: 48%; top: 43%; animation: tap 600ms 2700ms ease-out both; }
+
+/* TuckMe opens on "Shared with you", every place ticked. */
+.sl-app { position: absolute; inset: 0; background: var(--cream); transform: translateY(100%); animation: slide-in 420ms 3150ms cubic-bezier(.2, .9, .3, 1) both; }
+.sl-head { padding: 12% 6% 0.9em; background: #F6B9A8; border-radius: 0 0 1.2em 1.2em; display: grid; }
+.sl-head small { font-weight: 700; }
+.sl-head b { font-size: 1.7em; letter-spacing: -0.03em; line-height: 1.1; }
+.sl-head span { font-size: 0.85em; }
+.sl-picks { display: grid; gap: 0.4em; padding: 0.8em 4% 0; }
+.sl-pick i { flex: none; width: 1.3em; height: 1.3em; border-radius: 0.35em; border: 2px solid #9A938A; position: relative; }
+.sl-pick i::after { content: ''; position: absolute; inset: -2px; border-radius: 0.35em; background: var(--ink); opacity: 0; transform: scale(0.5); animation: tick-on 220ms ease-out both; }
+.sl-pick i::before { content: ''; position: absolute; z-index: 1; left: 32%; top: 12%; width: 28%; height: 55%; border: solid var(--cream); border-width: 0 2px 2px 0; transform: rotate(45deg); opacity: 0; animation: show 150ms both; }
+.sl-pick:nth-child(1) i::after, .sl-pick:nth-child(1) i::before { animation-delay: 3600ms; }
+.sl-pick:nth-child(2) i::after, .sl-pick:nth-child(2) i::before { animation-delay: 3750ms; }
+.sl-pick:nth-child(3) i::after, .sl-pick:nth-child(3) i::before { animation-delay: 3900ms; }
+@keyframes tick-on { to { opacity: 1; transform: none; } }
+.sl-save { position: absolute; left: 5%; right: 5%; bottom: 16%; padding: 0.85em; border-radius: 999px; background: var(--ink); color: var(--cream); text-align: center; font-weight: 800; font-size: 0.9em; }
+.sl-app .snack { bottom: 27%; animation: snack 380ms 4800ms cubic-bezier(.2, 1.2, .4, 1) both; }
+.t-save { left: 50%; top: 80%; animation: tap 600ms 4350ms ease-out both; }
 
 /* ---- How it works: one row per step, card and words taking turns ---- */
 .how { max-width: 1180px; margin: 0 auto; padding: 88px 20px 0; }

@@ -8,6 +8,8 @@
   var scenes = root.querySelectorAll('.stage .scene');
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var STEP_MS = 4600;
+  // A scene that tells a longer story says how long it needs.
+  function lengthOf(scene) { return +scene.getAttribute('data-ms') || STEP_MS; }
   var current = -1;
   var timer = null;
   var visible = true;
@@ -26,7 +28,7 @@
   function schedule() {
     clearTimeout(timer);
     if (still || !visible || document.hidden) return;
-    timer = setTimeout(function () { show((current + 1) % scenes.length); }, STEP_MS);
+    timer = setTimeout(function () { show((current + 1) % scenes.length); }, lengthOf(scenes[current]));
   }
 
   function pause() {
@@ -75,11 +77,12 @@
     root.classList.add('js-reveal');
     rows.forEach(function (row) {
       var loop = null;
+      var length = lengthOf(row.querySelector('.scene'));
       function stop() { clearInterval(loop); loop = null; }
       function start() {
         if (loop || document.hidden) return;
         replay(row);
-        loop = setInterval(function () { replay(row); }, STEP_MS);
+        loop = setInterval(function () { replay(row); }, length);
       }
       new IntersectionObserver(function (entries) {
         row.inView = entries[0].isIntersecting;
