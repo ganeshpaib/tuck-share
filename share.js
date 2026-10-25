@@ -1,8 +1,6 @@
 // TuckMe shared lists. The list lives in the link after "#": it is read here,
 // in the browser, and never sent to any server.
 
-const GET_TUCK = 'https://github.com/ganeshpaib/tuck-share/releases';
-
 // No real link is longer; a real list inflates to a few KB. Both stop a
 // crafted link from filling the browser's memory.
 const MAX_PAYLOAD = 16000;
@@ -110,10 +108,9 @@ function header(doc) {
     el(doc, 'span', { text: 'TuckMe', cls: 'brand-name' }));
 }
 
-function getTuck(doc, isIphone) {
-  return isIphone
-    ? el(doc, 'p', { text: 'TuckMe for iPhone is coming soon', cls: 'soon' })
-    : el(doc, 'a', { text: 'Get TuckMe', cls: 'button dark', attrs: { href: GET_TUCK } });
+/** The app isn't out yet: no download link anywhere, on any phone. */
+function getTuck(doc) {
+  return el(doc, 'p', { text: 'TuckMe is coming soon', cls: 'soon' });
 }
 
 /**
@@ -151,7 +148,7 @@ export function render(list, doc, { payload, isIphone }) {
     el(doc, 'h2', { text: 'Keep these in TuckMe' }),
     el(doc, 'p', { text: 'Save them, see them on a map.' }),
     el(doc, 'div', { cls: 'buttons' },
-      getTuck(doc, isIphone),
+      getTuck(doc),
       el(doc, 'a', {
         text: 'Open in TuckMe',
         cls: 'button light',
@@ -171,14 +168,15 @@ export function renderBroken(doc, { isIphone }) {
       el(doc, 'p', { text: "Ask for a fresh link, or check it wasn't cut short.", cls: 'count' })),
     el(doc, 'section', { cls: 'keep' },
       el(doc, 'h2', { text: 'Tuck it away. Find it when it counts.' }),
-      el(doc, 'div', { cls: 'buttons' }, getTuck(doc, isIphone))));
+      el(doc, 'div', { cls: 'buttons' }, getTuck(doc))));
 }
 
 /**
- * What shows at tuckme.app with no list in the link: the icon's T dropping into
- * its pocket, the tagline, and the way to get the app.
+ * What shows at tuckme.app with no list in the link, while the app isn't out:
+ * the icon's T tucking into its pocket and peeking out now and then, the
+ * tagline, and "Coming soon" stitched onto a little pocket.
  */
-export function renderHome(doc, { isIphone }) {
+export function renderHome(doc) {
   const pocket = el(doc, 'div', { cls: 'tuck-icon', attrs: { 'aria-hidden': 'true' } },
     el(doc, 'span', { cls: 'ti-back' }),
     el(doc, 'span', { cls: 'ti-t' },
@@ -191,11 +189,11 @@ export function renderHome(doc, { isIphone }) {
       el(doc, 'h1', { cls: 'home-title' },
         el(doc, 'span', { text: 'Tuck it away.' }),
         el(doc, 'span', { text: 'Find it when it counts.', cls: 'serif' })),
+      el(doc, 'p', { text: 'Coming soon', cls: 'soon-pocket' }),
       el(doc, 'p', {
-        text: 'Save reels, links and places from any app, and find them on a map when you need them. Our website is still being stitched together; the app is ready now.',
+        text: "Save reels, links and places from any app, and find them on a map when you need them. We're stitching the last seams.",
         cls: 'home-lede',
-      }),
-      el(doc, 'div', { cls: 'buttons' }, getTuck(doc, isIphone))));
+      })));
 }
 
 // In the browser: read the link and draw the page.
@@ -207,7 +205,7 @@ if (typeof window !== 'undefined' && window.document) {
   window.addEventListener('hashchange', () => window.location.reload());
   if (!payload) {
     doc.title = 'TuckMe · Tuck it away. Find it when it counts.';
-    renderHome(doc, { isIphone });
+    renderHome(doc);
   } else decodePayload(payload).then((list) => {
     if (list) {
       doc.title = `${list.name} · TuckMe`;

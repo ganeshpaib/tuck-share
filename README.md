@@ -9,9 +9,11 @@ The page that opens when someone shares a category from the **TuckMe** app
 - **Open in TuckMe** opens `tuck://share#<list>` in the app, where the places can
   be kept. **Get TuckMe** points to this repo's
   [Releases](https://github.com/ganeshpaib/tuck-share/releases) (Android).
-- With nothing after `#`, tuckme.app shows a short holding page: the icon's T
-  tucking itself into the pocket, the tagline and **Get TuckMe** (on iPhone,
-  "coming soon"). The full landing page is being built on the `landing` branch.
+- With nothing after `#`, tuckme.app shows a "Coming soon" holding page: the
+  icon's T tucks into its pocket and peeks out now and then, under the tagline.
+  The app isn't out yet, so no page links to a download; shared lists say
+  "TuckMe is coming soon" next to **Open in TuckMe**. The full landing page is
+  being built on the `landing` branch.
 - Plain HTML, CSS and JavaScript; no build step, no tracking.
 
 Tests (Node 18+): `npm test`. They decode a link made by the app's own encoder

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { decodePayload, safeHref, render, renderHome } from '../share.js';
+import { decodePayload, safeHref, render, renderHome, renderBroken } from '../share.js';
 
 const fixture = JSON.parse(
   readFileSync(new URL('./fixture.json', import.meta.url), 'utf8'),
@@ -87,23 +87,22 @@ test('titles with HTML are shown as text', () => {
   assert.ok(hrefs.includes('https://a.com/r'));
 });
 
-test('the buttons: Get TuckMe on Android, coming soon on iPhone, Open in TuckMe', () => {
-  const list = { name: 'Date night', colorIndex: 8, places: [{ title: 'A', url: 'https://a.com', address: '' }] };
-  const android = fakeDocument();
-  render(list, android, { payload: 'PAY', isIphone: false });
-  const aHrefs = android.created.map((e) => e.attributes.href).filter(Boolean);
-  assert.ok(aHrefs.includes('https://github.com/ganeshpaib/tuck-share/releases'));
-  assert.ok(aHrefs.includes('tuck://share#PAY'));
-  assert.ok(android.created.some((e) => e.textContent === '1 place shared with you'));
-  const texts = android.created.map((e) => e.textContent);
-  for (const t of ['TuckMe', 'Get TuckMe', 'Open in TuckMe', 'Keep these in TuckMe']) {
-    assert.ok(texts.includes(t), t);
-  }
+/** True if any element links to the app's download (GitHub releases or the APK). */
+const linksToApp = (doc) => doc.created.some((e) => /github\.com|\.apk/.test(e.attributes.href || ''));
 
-  const iphone = fakeDocument();
-  render(list, iphone, { payload: 'PAY', isIphone: true });
-  assert.ok(iphone.created.some((e) => e.textContent === 'TuckMe for iPhone is coming soon'));
-  assert.ok(!iphone.created.some((e) => e.attributes.href === 'https://github.com/ganeshpaib/tuck-share/releases'));
+test('a shared list: Open in TuckMe, and TuckMe is coming soon (no download link yet)', () => {
+  const list = { name: 'Date night', colorIndex: 8, places: [{ title: 'A', url: 'https://a.com', address: '' }] };
+  for (const isIphone of [false, true]) {
+    const doc = fakeDocument();
+    render(list, doc, { payload: 'PAY', isIphone });
+    const texts = doc.created.map((e) => e.textContent);
+    assert.ok(doc.created.some((e) => e.attributes.href === 'tuck://share#PAY'));
+    assert.ok(texts.includes('1 place shared with you'));
+    for (const t of ['TuckMe', 'Open in TuckMe', 'Keep these in TuckMe', 'TuckMe is coming soon']) {
+      assert.ok(texts.includes(t), t);
+    }
+    assert.ok(!linksToApp(doc));
+  }
 });
 
 test('a payload that inflates past 256 KB is refused', async () => {
@@ -119,17 +118,21 @@ test('a payload longer than any real link is refused unread', async () => {
   assert.equal(await decodePayload('A'.repeat(16001)), null);
 });
 
-test('with no list in the link, the page shows TuckMe, not an error', () => {
-  const doc = fakeDocument();
-  renderHome(doc, { isIphone: false });
-  const texts = doc.created.map((e) => e.textContent);
-  assert.ok(!texts.some((t) => t.includes("couldn't be opened")));
-  assert.ok(texts.includes('Tuck it away.'));
-  assert.ok(texts.includes('Find it when it counts.'));
-  const hrefs = doc.created.map((e) => e.attributes.href).filter(Boolean);
-  assert.ok(hrefs.includes('https://github.com/ganeshpaib/tuck-share/releases'));
+test('with no list in the link, the page says TuckMe is coming soon, not an error', () => {
+  for (const isIphone of [false, true]) {
+    const doc = fakeDocument();
+    renderHome(doc, { isIphone });
+    const texts = doc.created.map((e) => e.textContent);
+    assert.ok(!texts.some((t) => t.includes("couldn't be opened")));
+    for (const t of ['Tuck it away.', 'Find it when it counts.', 'Coming soon']) {
+      assert.ok(texts.includes(t), t);
+    }
+    assert.ok(!linksToApp(doc));
+  }
+});
 
-  const iphone = fakeDocument();
-  renderHome(iphone, { isIphone: true });
-  assert.ok(iphone.created.some((e) => e.textContent === 'TuckMe for iPhone is coming soon'));
+test('a broken link offers no download either', () => {
+  const doc = fakeDocument();
+  renderBroken(doc, { isIphone: false });
+  assert.ok(!linksToApp(doc));
 });
