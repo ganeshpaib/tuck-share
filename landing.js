@@ -61,7 +61,8 @@
 
   // How it works: each row comes in as it scrolls into view, and its phone
   // plays that step over and over while the row is on screen.
-  var rows = Array.prototype.slice.call(root.querySelectorAll('.how-row'));
+  // The install phone at the bottom loops the same way.
+  var rows = Array.prototype.slice.call(root.querySelectorAll('.how-row, .get-art'));
   function replay(row) {
     var scene = row.querySelector('.scene');
     scene.classList.remove('on');
@@ -185,12 +186,9 @@
       'TuckMe is on Android today. The iPhone version is on its way.';
     root.querySelector('#get-h').textContent = 'TuckMe for iPhone is coming soon';
     root.querySelector('.install').hidden = true;
-    root.querySelector('.get-phone').hidden = true;
+    root.querySelector('.get-art').hidden = true;
     root.querySelector('.get-cta .fine').textContent = '';
     aside.textContent = 'Friends can already share TuckMe lists with you: their links open right here in Safari.';
-    aside.hidden = false;
-  } else if (!isAndroid) {
-    aside.textContent = 'On a computer? Open tuckme.app on your Android phone and install it there.';
     aside.hidden = false;
   }
 
