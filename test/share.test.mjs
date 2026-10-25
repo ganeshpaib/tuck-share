@@ -87,7 +87,7 @@ test('titles with HTML are shown as text', () => {
   assert.ok(hrefs.includes('https://a.com/r'));
 });
 
-test('the buttons: Get TuckList on Android, coming soon on iPhone, Open in TuckList', () => {
+test('the buttons: Get TuckMe on Android, coming soon on iPhone, Open in TuckMe', () => {
   const list = { name: 'Date night', colorIndex: 8, places: [{ title: 'A', url: 'https://a.com', address: '' }] };
   const android = fakeDocument();
   render(list, android, { payload: 'PAY', isIphone: false });
@@ -96,13 +96,13 @@ test('the buttons: Get TuckList on Android, coming soon on iPhone, Open in TuckL
   assert.ok(aHrefs.includes('tuck://share#PAY'));
   assert.ok(android.created.some((e) => e.textContent === '1 place shared with you'));
   const texts = android.created.map((e) => e.textContent);
-  for (const t of ['TuckList', 'Get TuckList', 'Open in TuckList', 'Keep these in TuckList']) {
+  for (const t of ['TuckMe', 'Get TuckMe', 'Open in TuckMe', 'Keep these in TuckMe']) {
     assert.ok(texts.includes(t), t);
   }
 
   const iphone = fakeDocument();
   render(list, iphone, { payload: 'PAY', isIphone: true });
-  assert.ok(iphone.created.some((e) => e.textContent === 'TuckList for iPhone is coming soon'));
+  assert.ok(iphone.created.some((e) => e.textContent === 'TuckMe for iPhone is coming soon'));
   assert.ok(!iphone.created.some((e) => e.attributes.href === 'https://github.com/ganeshpaib/tuck-share/releases'));
 });
 

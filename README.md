@@ -1,13 +1,13 @@
 # tuck-share
 
-The page that opens when someone shares a category from the **TuckList** app
+The page that opens when someone shares a category from the **TuckMe** app
 (save links from any app, find them when it counts).
 
 - A shared link looks like `https://ganeshpaib.github.io/tuck-share/#<list>`.
   The whole list lives in the link after `#`. Browsers never send that part to
   any server, so GitHub never sees what was shared. This repo stores no saves.
-- **Open in TuckList** opens `tuck://share#<list>` in the app, where the places can
-  be kept. **Get TuckList** points to this repo's
+- **Open in TuckMe** opens `tuck://share#<list>` in the app, where the places can
+  be kept. **Get TuckMe** points to this repo's
   [Releases](https://github.com/ganeshpaib/tuck-share/releases) (Android).
 - Plain HTML, CSS and JavaScript; no build step, no tracking.
 

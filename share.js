@@ -1,4 +1,4 @@
-// TuckList shared lists. The list lives in the link after "#": it is read here,
+// TuckMe shared lists. The list lives in the link after "#": it is read here,
 // in the browser, and never sent to any server.
 
 const GET_TUCK = 'https://github.com/ganeshpaib/tuck-share/releases';
@@ -72,7 +72,7 @@ export async function decodePayload(payload) {
       places,
     };
   } catch {
-    // Cut short, re-encoded by a chat app, or not a TuckList link at all.
+    // Cut short, re-encoded by a chat app, or not a TuckMe link at all.
     return null;
   }
 }
@@ -107,13 +107,13 @@ function siteOf(url) {
 function header(doc) {
   return el(doc, 'header', { cls: 'brand' },
     el(doc, 'span', { cls: 'logo', attrs: { 'aria-hidden': 'true' } }),
-    el(doc, 'span', { text: 'TuckList', cls: 'brand-name' }));
+    el(doc, 'span', { text: 'TuckMe', cls: 'brand-name' }));
 }
 
 function getTuck(doc, isIphone) {
   return isIphone
-    ? el(doc, 'p', { text: 'TuckList for iPhone is coming soon', cls: 'soon' })
-    : el(doc, 'a', { text: 'Get TuckList', cls: 'button dark', attrs: { href: GET_TUCK } });
+    ? el(doc, 'p', { text: 'TuckMe for iPhone is coming soon', cls: 'soon' })
+    : el(doc, 'a', { text: 'Get TuckMe', cls: 'button dark', attrs: { href: GET_TUCK } });
 }
 
 /**
@@ -148,16 +148,16 @@ export function render(list, doc, { payload, isIphone }) {
   });
 
   const keep = el(doc, 'section', { cls: 'keep' },
-    el(doc, 'h2', { text: 'Keep these in TuckList' }),
+    el(doc, 'h2', { text: 'Keep these in TuckMe' }),
     el(doc, 'p', { text: 'Save them, see them on a map.' }),
     el(doc, 'div', { cls: 'buttons' },
       getTuck(doc, isIphone),
       el(doc, 'a', {
-        text: 'Open in TuckList',
+        text: 'Open in TuckMe',
         cls: 'button light',
         attrs: { href: `tuck://share#${payload}` },
       })),
-    el(doc, 'p', { text: 'Update TuckList to open shared lists.', cls: 'note' }));
+    el(doc, 'p', { text: 'Update TuckMe to open shared lists.', cls: 'note' }));
 
   root.append(band, el(doc, 'ul', { cls: 'list' }, ...rows), keep);
 }
@@ -181,7 +181,7 @@ if (typeof window !== 'undefined' && window.document) {
   const isIphone = /iPhone|iPad|iPod/.test(window.navigator.userAgent);
   decodePayload(payload).then((list) => {
     if (list) {
-      doc.title = `${list.name} · TuckList`;
+      doc.title = `${list.name} · TuckMe`;
       render(list, doc, { payload, isIphone });
     } else {
       renderBroken(doc, { isIphone });
