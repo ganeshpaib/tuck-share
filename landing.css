@@ -331,9 +331,9 @@
 .how-rows { list-style: none; padding: 0; display: grid; gap: 56px; margin-top: 32px; }
 .how-row { display: grid; gap: 22px; align-items: center; }
 .how-art {
-  /* The same phone in the same pockets as the top of the page, on the same butter. */
+  /* The same phone in the same pockets as the top of the page, straight on the page. */
   --pw: 230px;
-  position: relative; overflow: hidden; border-radius: 34px; background: var(--butter);
+  position: relative; overflow: hidden; border-radius: 34px;
   display: grid; justify-items: center;
   padding: 36px 0 calc(var(--pw) * 0.14 + 28px);
 }
