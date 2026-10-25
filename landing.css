@@ -375,29 +375,28 @@
 @keyframes tick { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 .kinds-panel {
-  --tint: #BFE3D0;
-  margin-top: 10px; border-radius: 34px; background: var(--tint);
+  /* Butter for every chip, with the phone in the pockets, like the cards above. */
+  margin-top: 10px; border-radius: 34px; background: var(--butter);
   display: grid; gap: 8px; overflow: hidden;
-  padding: 30px 24px 0;
-  transition: background 320ms ease;
+  padding: 30px 24px 8px;
 }
-.kinds-panel[data-k="recipes"] { --tint: #F6B9A8; }
-.kinds-panel[data-k="search"] { --tint: #BDDCF3; }
-.kinds-panel[data-k="sunday"] { --tint: #CFCBF5; }
-.kinds-panel[data-k="cats"] { --tint: #F8DC6B; }
 .kinds-copy h3 { font-size: clamp(26px, 3.2vw, 40px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 900; margin-bottom: 12px; text-wrap: balance; }
 .kinds-copy p { max-width: 28em; color: #2A2620; }
 .kinds-copy [role="tabpanel"]:not([hidden]) { animation: copy-in 320ms ease both; }
 @keyframes copy-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-/* The phone rises out of the bottom of the panel, cut off like it's in a pocket. */
+.kinds-art {
+  --pw: 230px;
+  position: relative; display: grid; justify-items: center;
+  padding: 16px 0 calc(var(--pw) * 0.14 + 28px);
+}
+.kinds-art .pocket-back { bottom: calc(var(--pw) * 0.1 + 28px); }
+.kinds-art .pocket-front { bottom: 28px; animation: none; }
 .kinds-phone {
-  --pw: clamp(240px, 70vw, 290px);
-  justify-self: center; margin-top: 22px; margin-bottom: calc(var(--pw) * -0.62);
+  position: relative; z-index: 1;
   width: var(--pw); aspect-ratio: 300 / 620;
   background: var(--ink); border-radius: calc(var(--pw) * 0.16); padding: calc(var(--pw) * 0.035);
 }
-.kinds-panel { padding-bottom: 0; }
 .kinds-phone .screen { background: var(--cream); }
 .ks { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms ease; padding: 9% 5% 0; }
 .ks.on { opacity: 1; }
@@ -589,15 +588,15 @@
   .private { width: calc(100% - 40px); }
 }
 @media (min-width: 860px) {
-  .kinds-panel { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 56px 64px 0; }
-  .kinds-copy { padding-bottom: 56px; }
+  .kinds-panel { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 40px 64px 12px; }
+  .kinds-art { --pw: 250px; }
+  .kinds-copy { padding-bottom: 0; }
   .kinds-copy p { font-size: 19px !important; }
   .how-row { grid-template-columns: 1fr 1fr; gap: 64px; }
   .how-row:nth-child(even) .how-art { order: 2; }
   .how-art { --pw: 250px; padding-top: 44px; }
   .get-box { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 48px 64px 20px; }
   .get-art { --pw: 250px; }
-  .kinds-phone { margin-top: 0; }
 }
 @media (min-width: 980px) {
   .hero {
