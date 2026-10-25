@@ -189,11 +189,7 @@ export function renderHome(doc) {
       el(doc, 'h1', { cls: 'home-title' },
         el(doc, 'span', { text: 'Tuck it away.' }),
         el(doc, 'span', { text: 'Find it when it counts.', cls: 'serif' })),
-      el(doc, 'p', { text: 'Coming soon', cls: 'soon-pocket' }),
-      el(doc, 'p', {
-        text: "Save reels, links and places from any app, and find them on a map when you need them. We're stitching the last seams.",
-        cls: 'home-lede',
-      })));
+      el(doc, 'p', { text: 'Coming soon', cls: 'soon-pocket' })));
 }
 
 // In the browser: read the link and draw the page.

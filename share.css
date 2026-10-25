@@ -61,7 +61,6 @@ main:has(.home) { max-width: none; padding-bottom: 0; }
 @keyframes ti-squish { 40% { transform: scale(1.04, 0.88); } to { transform: none; } }
 .home-title { display: grid; margin: 0; font-size: clamp(44px, 9vw, 84px); line-height: 0.95; font-weight: 900; letter-spacing: -0.04em; }
 .home-title .serif { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; font-size: 1.1em; letter-spacing: -0.02em; }
-.home-lede { max-width: 30em; margin: 4px 0 6px; font-size: 18px; line-height: 1.5; color: #3A342B; }
 .home .soon { color: #5C4A0E; }
 /* "Coming soon", stitched onto a little coral pocket. */
 .soon-pocket {
