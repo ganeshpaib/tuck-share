@@ -174,12 +174,41 @@ export function renderBroken(doc, { isIphone }) {
       el(doc, 'div', { cls: 'buttons' }, getTuck(doc, isIphone))));
 }
 
+/**
+ * What shows at tuckme.app with no list in the link: the icon's T dropping into
+ * its pocket, the tagline, and the way to get the app.
+ */
+export function renderHome(doc, { isIphone }) {
+  const pocket = el(doc, 'div', { cls: 'tuck-icon', attrs: { 'aria-hidden': 'true' } },
+    el(doc, 'span', { cls: 'ti-back' }),
+    el(doc, 'span', { cls: 'ti-t' },
+      el(doc, 'span', { cls: 'ti-bar' }),
+      el(doc, 'span', { cls: 'ti-stem' })),
+    el(doc, 'span', { cls: 'ti-front' }));
+  doc.getElementById('app').append(
+    el(doc, 'section', { cls: 'home' },
+      pocket,
+      el(doc, 'h1', { cls: 'home-title' },
+        el(doc, 'span', { text: 'Tuck it away.' }),
+        el(doc, 'span', { text: 'Find it when it counts.', cls: 'serif' })),
+      el(doc, 'p', {
+        text: 'Save reels, links and places from any app, and find them on a map when you need them. Our website is still being stitched together; the app is ready now.',
+        cls: 'home-lede',
+      }),
+      el(doc, 'div', { cls: 'buttons' }, getTuck(doc, isIphone))));
+}
+
 // In the browser: read the link and draw the page.
 if (typeof window !== 'undefined' && window.document) {
   const doc = window.document;
   const payload = window.location.hash.slice(1);
   const isIphone = /iPhone|iPad|iPod/.test(window.navigator.userAgent);
-  decodePayload(payload).then((list) => {
+  // Pasting a shared link into a tab already on the page only changes the hash.
+  window.addEventListener('hashchange', () => window.location.reload());
+  if (!payload) {
+    doc.title = 'TuckMe · Tuck it away. Find it when it counts.';
+    renderHome(doc, { isIphone });
+  } else decodePayload(payload).then((list) => {
     if (list) {
       doc.title = `${list.name} · TuckMe`;
       render(list, doc, { payload, isIphone });

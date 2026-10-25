@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { decodePayload, safeHref, render } from '../share.js';
+import { decodePayload, safeHref, render, renderHome } from '../share.js';
 
 const fixture = JSON.parse(
   readFileSync(new URL('./fixture.json', import.meta.url), 'utf8'),
@@ -117,4 +117,19 @@ test('a payload that inflates past 256 KB is refused', async () => {
 
 test('a payload longer than any real link is refused unread', async () => {
   assert.equal(await decodePayload('A'.repeat(16001)), null);
+});
+
+test('with no list in the link, the page shows TuckMe, not an error', () => {
+  const doc = fakeDocument();
+  renderHome(doc, { isIphone: false });
+  const texts = doc.created.map((e) => e.textContent);
+  assert.ok(!texts.some((t) => t.includes("couldn't be opened")));
+  assert.ok(texts.includes('Tuck it away.'));
+  assert.ok(texts.includes('Find it when it counts.'));
+  const hrefs = doc.created.map((e) => e.attributes.href).filter(Boolean);
+  assert.ok(hrefs.includes('https://github.com/ganeshpaib/tuck-share/releases'));
+
+  const iphone = fakeDocument();
+  renderHome(iphone, { isIphone: true });
+  assert.ok(iphone.created.some((e) => e.textContent === 'TuckMe for iPhone is coming soon'));
 });

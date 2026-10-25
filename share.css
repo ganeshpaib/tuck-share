@@ -37,3 +37,30 @@ h1 { font-size: 40px; line-height: 1.02; letter-spacing: -1.2px; margin: 0 0 6px
 .soon { font-weight: 700; align-self: center; margin: 0 8px 0 0; }
 .note { margin-top: 12px !important; font-size: 13px; color: rgba(17, 17, 17, 0.7); }
 .noscript { padding: 24px; }
+
+/* tuckme.app with no shared list: the icon tucks itself in, then the tagline.
+   The icon's shapes are icon.svg's, on its 1024 grid, as percentages. */
+.home {
+  min-height: 100svh; display: grid; align-content: center; justify-items: center; gap: 18px;
+  padding: 40px 24px 56px; text-align: center; background: var(--butter);
+}
+main:has(.home) { max-width: none; padding-bottom: 0; }
+.tuck-icon { position: relative; width: 168px; height: 168px; margin-bottom: 8px; }
+.tuck-icon span { position: absolute; display: block; }
+.ti-back { left: 29.3%; top: 50.8%; width: 41.4%; height: 27.3%; border-radius: 15px; background: #CFCBF5; }
+.ti-t { inset: 0; animation: ti-drop 900ms 300ms cubic-bezier(.16, 1, .3, 1) both; }
+.ti-bar { left: 15.6%; top: 16.6%; width: 68.8%; height: 18.6%; border-radius: 16px; background: var(--ink); }
+.ti-stem { left: 41.2%; top: 16.6%; width: 17.6%; height: 51.8%; border-radius: 15px; background: var(--ink); }
+.ti-front {
+  left: 24.4%; top: 57.6%; width: 51.2%; height: 26.4%; border-radius: 16px; background: #F6B9A8;
+  transform-origin: 50% 100%; animation: ti-squish 500ms 1100ms ease-out both;
+}
+@keyframes ti-drop { from { transform: translateY(-70%); opacity: 0; } 30% { opacity: 1; } to { transform: none; } }
+@keyframes ti-squish { 40% { transform: scale(1.04, 0.88); } to { transform: none; } }
+.home-title { display: grid; margin: 0; font-size: clamp(44px, 9vw, 84px); line-height: 0.95; font-weight: 900; letter-spacing: -0.04em; }
+.home-title .serif { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; font-size: 1.1em; letter-spacing: -0.02em; }
+.home-lede { max-width: 30em; margin: 4px 0 6px; font-size: 18px; line-height: 1.5; color: #3A342B; }
+.home .buttons { justify-content: center; margin-top: 0; }
+.home .button.dark { min-height: 56px; padding: 0 30px; font-size: 17px; }
+.home .soon { font-weight: 700; color: #5C4A0E; }
+@media (prefers-reduced-motion: reduce) { .ti-t, .ti-front { animation: none; } }
