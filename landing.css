@@ -513,7 +513,7 @@
   .kinds-panel { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 56px 64px 0; }
   .kinds-copy { padding-bottom: 56px; }
   .kinds-copy p { font-size: 19px !important; }
-  .how-row { grid-template-columns: 1.1fr 0.9fr; gap: 64px; }
+  .how-row { grid-template-columns: 1fr 1fr; gap: 64px; }
   .how-row:nth-child(even) .how-art { order: 2; }
   .how-art { --pw: 250px; padding-top: 44px; }
   .get-box { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 56px 64px 0; }
