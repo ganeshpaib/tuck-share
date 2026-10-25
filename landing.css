@@ -94,11 +94,16 @@
   transform-origin: 50% 100%;
   animation: squish 520ms 1050ms ease-out both;
 }
-/* Stitching down the sides and along the bottom, none across the top, so the
-   phone goes into the pocket rather than standing on it. */
+/* Stitching all round the pocket, except straight across where the phone goes
+   in: the seam meets the phone on each side, so the phone sits inside. */
 .pocket-front::after {
-  content: ''; position: absolute; inset: 12px 12px 12px; border: 2.5px dashed rgba(17, 17, 17, 0.26);
-  border-top: none; border-radius: 0 0 calc(var(--pw) * 0.12) calc(var(--pw) * 0.12);
+  content: ''; position: absolute; inset: 12px; border: 2.5px dashed rgba(17, 17, 17, 0.26);
+  border-radius: calc(var(--pw) * 0.12);
+}
+.pocket-front::before {
+  /* Covers the seam where the phone is (the phone is as wide as --pw, centred). */
+  content: ''; position: absolute; z-index: 1; top: 9px; height: 9px;
+  left: calc(var(--pw) * 0.18); right: calc(var(--pw) * 0.18); background: var(--coral);
 }
 @keyframes squish { 0% { transform: none; } 35% { transform: scale(1.03, 0.9); } 100% { transform: none; } }
 
