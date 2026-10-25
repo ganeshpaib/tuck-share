@@ -7,8 +7,7 @@ The page that opens when someone shares a category from the **TuckMe** app
   The whole list lives in the link after `#`. Browsers never send that part to
   any server, so GitHub never sees what was shared. This repo stores no saves.
 - **Open in TuckMe** opens `tuck://share#<list>` in the app, where the places can
-  be kept. **Get TuckMe** points to this repo's
-  [Releases](https://github.com/ganeshpaib/tuck-share/releases) (Android).
+  be kept.
 - With nothing after `#`, tuckme.app shows a "Coming soon" holding page: the
   icon's T tucks into its pocket and peeks out now and then, under the tagline.
   The app isn't out yet, so no page links to a download; shared lists say
