@@ -18,8 +18,11 @@
   <link rel="stylesheet" href="share.css">
   <link rel="stylesheet" href="landing.css">
   <script>
-    // A shared list opens straight into its own view, without the landing page flashing first.
-    if (location.hash.length > 1) document.documentElement.classList.add('is-share');
+    // A shared list opens straight into its own view, without the landing page
+    // flashing first. Same rule as pageFor in share.js: #get and #how are sections.
+    var SECTIONS = ['get', 'how'];
+    var id = location.hash.slice(1);
+    if (id && SECTIONS.indexOf(id) < 0) document.documentElement.classList.add('is-share');
   </script>
 </head>
 <body>

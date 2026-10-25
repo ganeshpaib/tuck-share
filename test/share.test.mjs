@@ -127,6 +127,18 @@ test('no list in the link shows the landing page; any list shows the shared view
   assert.equal(pageFor('#broken'), 'share');
 });
 
+test('the landing page\'s own section links stay on the landing page', () => {
+  // "Get the app" and "See how it works" jump to #get and #how.
+  assert.equal(pageFor('#get'), 'landing');
+  assert.equal(pageFor('#how'), 'landing');
+  // The early check in index.html, which runs before share.js, agrees.
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  for (const id of ['get', 'how']) {
+    assert.ok(html.includes(`id="${id}"`), id);
+    assert.match(html, new RegExp(`SECTIONS = \\[[^\\]]*'${id}'`), id);
+  }
+});
+
 test('the landing page links straight to the Android download', () => {
   const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
   assert.ok(html.includes('https://github.com/ganeshpaib/tuck-share/releases/latest/download/TuckMe.apk'));

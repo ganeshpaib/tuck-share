@@ -175,18 +175,31 @@ export function renderBroken(doc, { isIphone }) {
       el(doc, 'div', { cls: 'buttons' }, getTuck(doc, isIphone))));
 }
 
-/** Which page a visit shows: a link with anything after "#" is a shared list. */
+/** The landing page's own sections: "Get the app" and "See how it works" jump to them. */
+export const SECTIONS = ['get', 'how'];
+
+/**
+ * Which page a visit shows: anything after "#" is a shared list, except the
+ * landing page's own sections.
+ */
 export function pageFor(hash) {
-  return hash && hash.length > 1 ? 'share' : 'landing';
+  const id = (hash || '').replace(/^#/, '');
+  return id && !SECTIONS.includes(id) ? 'share' : 'landing';
 }
 
 // In the browser: a shared list draws its page; without one, the landing page
 // in index.html shows as it is.
 if (typeof window !== 'undefined' && window.document) {
   const doc = window.document;
+  const page = pageFor(window.location.hash);
   // Pasting a shared link into a tab already on the page only changes the hash.
-  window.addEventListener('hashchange', () => window.location.reload());
-  if (pageFor(window.location.hash) === 'share') {
+  // Jumping to a section of the landing page changes it too, and stays put.
+  window.addEventListener('hashchange', () => {
+    if (page === 'share' || pageFor(window.location.hash) === 'share') {
+      window.location.reload();
+    }
+  });
+  if (page === 'share') {
     doc.documentElement.classList.add('is-share');
     const payload = window.location.hash.slice(1);
     const isIphone = /iPhone|iPad|iPod/.test(window.navigator.userAgent);

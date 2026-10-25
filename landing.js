@@ -1,8 +1,8 @@
 // The landing page's moving parts: the phone that plays through what TuckMe
 // does, the install buttons for this visitor's phone, and the note after a tap
-// on Download. A shared list (anything after "#") never runs any of it.
+// on Download. A shared list never runs any of it.
 (function () {
-  if (location.hash.length > 1) return;
+  if (document.documentElement.classList.contains('is-share')) return;
 
   var root = document.getElementById('landing');
   var scenes = root.querySelectorAll('.scene');
