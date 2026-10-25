@@ -118,6 +118,7 @@
       'TuckMe is on Android today. The iPhone version is on its way.';
     root.querySelector('#get-h').textContent = 'TuckMe for iPhone is coming soon';
     root.querySelector('.install').hidden = true;
+    root.querySelector('.get-phone').hidden = true;
     root.querySelector('.get-cta .fine').textContent = '';
     aside.textContent = 'Friends can already share TuckMe lists with you: their links open right here in Safari.';
     aside.hidden = false;

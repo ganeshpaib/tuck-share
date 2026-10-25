@@ -395,19 +395,46 @@
 .private li b { display: block; color: var(--cream); font-size: 20px; margin-bottom: 2px; }
 
 /* ---- Get it ----------------------------------------------------------- */
-.get { max-width: 1180px; margin: 0 auto; padding: 80px 20px 40px; }
+.get { max-width: 1180px; margin: 0 auto; padding: 72px 20px 24px; }
+.get-box {
+  display: grid; gap: 8px; overflow: hidden;
+  padding: 36px 24px 0; border-radius: 34px; background: var(--butter);
+}
 .get h2 { max-width: 11em; }
-.install { list-style: none; padding: 0; margin-top: 30px; display: grid; gap: 14px; counter-reset: step; }
-.install li { counter-increment: step; position: relative; padding: 4px 0 4px 64px; min-height: 48px; }
+.get .install { list-style: none; padding: 0; margin-top: 28px; display: grid; gap: 16px; counter-reset: step; }
+.install li { counter-increment: step; position: relative; padding: 2px 0 0 60px; min-height: 46px; }
 .install li::before {
   content: counter(step); position: absolute; left: 0; top: 0;
-  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
-  background: var(--butter); font-weight: 900; font-size: 20px;
+  width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--ink); color: var(--butter); font-weight: 900; font-size: 19px;
 }
 .install b { display: block; font-size: 19px; }
-.install span { display: block; color: var(--muted); max-width: 30em; }
-.get-cta { margin-top: 30px; }
-.aside { margin-top: 22px !important; padding: 16px 20px; border-radius: 18px; background: var(--lav); max-width: 34em; font-weight: 500; }
+.install span { display: block; color: #3A342B; max-width: 30em; }
+.get-cta { margin-top: 28px; }
+.get .fine { color: #4A4338; }
+.aside { margin-top: 18px !important; padding: 14px 18px; border-radius: 18px; background: rgba(255, 253, 248, 0.7); max-width: 34em; font-weight: 500; font-size: 16px !important; }
+
+/* Android's own install prompt, the screen step 2 talks about. */
+.get-phone {
+  --pw: clamp(230px, 66vw, 270px);
+  justify-self: center; margin: 28px 0 calc(var(--pw) * -0.75);
+  width: var(--pw); aspect-ratio: 300 / 620;
+  background: var(--ink); border-radius: calc(var(--pw) * 0.16); padding: calc(var(--pw) * 0.035);
+}
+.get-phone .screen { background: linear-gradient(170deg, #F3E5C8, #E9D6B0); }
+.gp-dim { position: absolute; inset: 0; background: rgba(17, 17, 17, 0.35); }
+.gp-dialog {
+  position: absolute; left: 7%; right: 7%; top: 16%;
+  padding: 1.3em 1.1em 1em; border-radius: 1.5em; background: #FFFDF8;
+  display: grid; justify-items: center; text-align: center; gap: 0.35em;
+}
+.gp-dialog img { width: 3.4em; height: 3.4em; border-radius: 0.9em; }
+.gp-dialog b { font-size: 1.15em; margin-top: 0.2em; }
+.gp-dialog p { margin: 0; font-size: 0.95em !important; line-height: 1.35 !important; color: #3A342B; }
+.gp-actions { justify-self: stretch; display: flex; justify-content: flex-end; gap: 1.2em; margin-top: 0.9em; font-weight: 800; font-size: 0.95em; }
+.gp-actions span { padding: 0.5em 0.2em; color: #3B6F5C; }
+.gp-actions .go { padding: 0.5em 1.1em; border-radius: 999px; background: #3B6F5C; color: #fff; animation: nudge 2.4s ease-in-out 1s infinite; }
+@keyframes nudge { 0%, 70%, 100% { transform: none; } 80% { transform: scale(1.08); } 90% { transform: scale(0.97); } }
 
 .foot { max-width: 1180px; margin: 0 auto; padding: 28px 20px 40px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border-top: 2px solid rgba(17, 17, 17, 0.08); font-size: 15px; }
 .foot .mark { font-size: 18px; }
@@ -418,23 +445,25 @@
   position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 10;
   width: min(92vw, 440px); padding: 14px 18px; border-radius: 20px;
   background: var(--ink); color: var(--cream); font-size: 15px; line-height: 1.4;
-  transform: translate(-50%, 160%); transition: transform 420ms cubic-bezier(.2, 1.2, .4, 1);
+  transform: translate(-50%, calc(100% + 40px)); visibility: hidden;
+  transition: transform 420ms cubic-bezier(.2, 1.2, .4, 1), visibility 0s 420ms;
 }
 .dl-toast b { color: var(--butter); }
-.dl-toast.show { transform: translate(-50%, 0); }
+.dl-toast.show { transform: translate(-50%, 0); visibility: visible; transition: transform 420ms cubic-bezier(.2, 1.2, .4, 1); }
 
 /* ---- Wider screens ---------------------------------------------------- */
 @media (min-width: 720px) {
   .private { margin-inline: auto; padding: 64px 56px; }
   .private ul { grid-template-columns: repeat(3, 1fr); gap: 32px; }
-  .install { grid-template-columns: repeat(3, 1fr); gap: 28px; }
-  .install li { padding: 64px 0 0; }
   .private { width: calc(100% - 40px); }
 }
 @media (min-width: 860px) {
   .kinds-panel { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 56px 64px 0; }
   .kinds-copy { padding-bottom: 56px; }
   .kinds-copy p { font-size: 19px !important; }
+  .get-box { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 56px 64px 0; }
+  .get-copy { padding-bottom: 56px; }
+  .get-phone { margin-top: 0; }
   .kinds-phone { margin-top: 0; }
 }
 @media (min-width: 980px) {
