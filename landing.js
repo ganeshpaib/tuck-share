@@ -5,8 +5,7 @@
   if (document.documentElement.classList.contains('is-share')) return;
 
   var root = document.getElementById('landing');
-  var scenes = root.querySelectorAll('.scene');
-  var steps = root.querySelectorAll('.steps li');
+  var scenes = root.querySelectorAll('.stage .scene');
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var STEP_MS = 4600;
   var current = -1;
@@ -19,14 +18,8 @@
       // Off and on again in one frame would not restart the scene's animations.
       s.classList.remove('on');
     });
-    steps.forEach(function (li, n) {
-      li.classList.remove('on');
-      li.classList.toggle('done', n < i);
-      li.querySelector('button').setAttribute('aria-pressed', String(n === i));
-    });
     void root.offsetWidth;
     scenes[i].classList.add('on');
-    steps[i].classList.add('on');
     schedule();
   }
 
@@ -43,13 +36,9 @@
 
   function resume() {
     root.classList.remove('paused');
-    // Start the current step over, so the bar and the phone stay in step.
+    // Start the current scene over rather than mid-way.
     show(current < 0 ? 0 : current);
   }
-
-  steps.forEach(function (li, n) {
-    li.querySelector('button').addEventListener('click', function () { show(n); });
-  });
 
   if (still) {
     root.classList.add('still');
@@ -68,6 +57,25 @@
       if (current < 0) return;
       if (document.hidden) pause(); else if (visible) resume();
     });
+  }
+
+  // How it works: each row comes in as it scrolls into view, and its phone
+  // plays that step once.
+  var rows = root.querySelectorAll('.how-row');
+  function reveal(row) {
+    row.classList.add('seen');
+    row.querySelector('.scene').classList.add('on');
+  }
+  if (still || !('IntersectionObserver' in window)) {
+    rows.forEach(reveal);
+  } else {
+    root.classList.add('js-reveal');
+    var watch = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { reveal(e.target); watch.unobserve(e.target); }
+      });
+    }, { threshold: 0.35 });
+    rows.forEach(function (r) { watch.observe(r); });
   }
 
   // Ways to find it again: each chip shows its panel, its words and its screen.

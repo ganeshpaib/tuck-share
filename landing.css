@@ -24,7 +24,7 @@
 .landing h2, .landing h3, .landing p, .landing ul, .landing ol { margin: 0; }
 .landing h2 { font-size: clamp(32px, 4.6vw, 54px); line-height: 1; letter-spacing: -0.035em; font-weight: 900; text-wrap: balance; }
 .landing h3 { font-size: 22px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 800; }
-.landing p, .landing li span { font-size: 17px; line-height: 1.5; }
+.landing p, .install span { font-size: 17px; line-height: 1.5; }
 
 /* ---- Top bar ---------------------------------------------------------- */
 .top {
@@ -47,11 +47,10 @@
   position: relative;
   max-width: 1180px; margin: 0 auto; padding: 36px 20px 24px;
   display: grid; gap: 28px;
-  grid-template-areas: 'text' 'stage' 'steps';
+  grid-template-areas: 'text' 'stage';
 }
 .hero-text { grid-area: text; }
 .stage { grid-area: stage; }
-.steps { grid-area: steps; }
 
 .headline { margin: 0 0 20px; font-weight: 900; font-size: clamp(46px, 6.3vw, 88px); line-height: 0.94; letter-spacing: -0.05em; }
 .headline .line { display: block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; }
@@ -229,7 +228,7 @@
 .map { position: absolute; inset: 0; width: 100%; height: 100%; }
 .map-top { position: absolute; top: 6%; left: 5%; right: 5%; display: flex; justify-content: space-between; align-items: center; padding: 0.6em 0.9em; border-radius: 999px; background: rgba(255, 253, 248, 0.92); }
 .map-chips { display: flex; gap: 0.3em; }
-.map-chips i { font-style: normal; font-size: 0.7em; font-weight: 700; padding: 0.35em 0.6em; border-radius: 999px; background: rgba(17, 17, 17, 0.06); }
+.map-chips i { white-space: nowrap; font-style: normal; font-size: 0.7em; font-weight: 700; padding: 0.35em 0.6em; border-radius: 999px; background: rgba(17, 17, 17, 0.06); }
 .map-chips i.on { background: var(--ink); color: var(--cream); }
 .pin {
   position: absolute; width: 7cqw; height: 7cqw; margin: -7cqw 0 0 -3.5cqw;
@@ -278,24 +277,35 @@
 @keyframes blink-in { 0% { opacity: 0; } 10%, 90% { opacity: 1; } 100% { opacity: 0; height: 0; padding-block: 0; margin-block: -0.35em; } }
 @keyframes dot { 50% { transform: translateY(-40%); } }
 
-/* ---- Steps beside the phone ------------------------------------------ */
-.steps { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.steps button {
-  all: unset; box-sizing: border-box; cursor: pointer; display: block; width: 100%; height: 100%;
-  padding: 12px 14px 14px; border-radius: 18px; background: rgba(255, 253, 248, 0.55);
-  transition: background 200ms ease;
+/* ---- How it works: one row per step, card and words taking turns ---- */
+.how { max-width: 1180px; margin: 0 auto; padding: 88px 20px 0; }
+.how h2 { margin-bottom: 8px; }
+.how-rows { list-style: none; padding: 0; display: grid; gap: 56px; margin-top: 32px; }
+.how-row { display: grid; gap: 22px; align-items: center; }
+.how-art {
+  position: relative; overflow: hidden; border-radius: 34px; background: var(--art);
+  display: grid; justify-items: center; padding-top: 34px;
+  /* Down to where the scenes stop: the bottom strip of each screen stays empty. */
+  height: calc(34px + var(--pw) * 2.067 * 0.87);
 }
-.steps button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
-.steps b { display: block; font-size: 16px; line-height: 1.2; font-weight: 800; }
-.steps span { display: none; }
-.steps .bar { display: block; height: 4px; margin-top: 10px; border-radius: 4px; background: rgba(17, 17, 17, 0.12); overflow: hidden; }
-.steps .bar::after { content: ''; display: block; height: 100%; width: 0; background: var(--ink); border-radius: inherit; }
-.steps .on button { background: var(--paper); }
-.steps .on .bar::after { animation: fill var(--dur) linear both; }
-.steps .done .bar::after { width: 100%; }
-.paused .steps .on .bar::after { animation-play-state: paused; }
-.still .steps .on .bar::after { animation: none; width: 100%; }
-@keyframes fill { to { width: 100%; } }
+.how-art { --pw: 230px; }
+.how-phone {
+  width: var(--pw); aspect-ratio: 300 / 620;
+  background: var(--ink); border-radius: calc(var(--pw) * 0.16); padding: calc(var(--pw) * 0.035);
+}
+.how-phone .scene { transition: none; }
+.how-n {
+  display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--ink); color: var(--butter); font-weight: 900; font-size: 19px; margin-bottom: 18px;
+}
+.how-text h3 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1; letter-spacing: -0.035em; font-weight: 900; margin-bottom: 14px; text-wrap: balance; }
+.how-text p { max-width: 26em; color: #2A2620; font-size: 18px !important; }
+
+/* Each row comes in once, as it scrolls into view; its phone starts playing then. */
+.how-row .how-art, .how-row .how-text { transition: opacity 700ms ease, transform 700ms cubic-bezier(.2, .8, .2, 1); }
+.js-reveal .how-row:not(.seen) .how-art { opacity: 0; transform: translateY(40px) scale(0.97); }
+.js-reveal .how-row:not(.seen) .how-text { opacity: 0; transform: translateY(24px); }
+.how-row .how-text { transition-delay: 120ms; }
 
 /* ---- Ways to find it again: chips switch one panel and its phone ------ */
 .kinds { max-width: 1180px; margin: 0 auto; padding: 72px 20px 24px; }
@@ -461,6 +471,9 @@
   .kinds-panel { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 56px 64px 0; }
   .kinds-copy { padding-bottom: 56px; }
   .kinds-copy p { font-size: 19px !important; }
+  .how-row { grid-template-columns: 1.1fr 0.9fr; gap: 64px; }
+  .how-row:nth-child(even) .how-art { order: 2; }
+  .how-art { --pw: 250px; padding-top: 44px; height: calc(44px + var(--pw) * 2.067 * 0.87); }
   .get-box { grid-template-columns: 1fr auto; align-items: center; column-gap: 48px; padding: 56px 64px 0; }
   .get-copy { padding-bottom: 56px; }
   .get-phone { margin-top: 0; }
@@ -469,14 +482,10 @@
 @media (min-width: 980px) {
   .hero {
     grid-template-columns: 1.08fr 0.92fr; column-gap: 56px; row-gap: 30px; align-items: start;
-    grid-template-areas: 'text stage' 'steps stage';
+    grid-template-areas: 'text stage';
     padding-top: 64px;
   }
-  .stage { grid-row: 1 / span 2; align-self: center; }
-  .steps { grid-template-columns: 1fr; gap: 4px; max-width: 30em; }
-  .steps button { display: grid; grid-template-columns: 1fr; padding: 12px 16px 12px; background: transparent; }
-  .steps span { display: block; font-size: 15px; color: var(--muted); }
-  .steps .on button { background: rgba(255, 253, 248, 0.7); }
+  .stage { align-self: center; }
   .landing { --pw: 300px; }
 }
 
