@@ -70,18 +70,35 @@
     });
   }
 
-  // The tiles play their small moment once, when they scroll into view.
-  var bento = root.querySelector('.bento');
-  if (still || !('IntersectionObserver' in window)) {
-    bento.classList.add('seen');
-  } else {
-    var seen = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add('seen'); seen.unobserve(e.target); }
-      });
-    }, { threshold: 0.3 });
-    bento.querySelectorAll('.tile').forEach(function (t) { seen.observe(t); });
+  // Ways to find it again: each chip shows its panel, its words and its screen.
+  var tabs = Array.prototype.slice.call(root.querySelectorAll('.kinds-tabs [role="tab"]'));
+  var panel = root.querySelector('.kinds-panel');
+  function choose(tab, focus) {
+    var k = tab.getAttribute('data-k');
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    panel.setAttribute('data-k', k);
+    panel.querySelectorAll('.ks').forEach(function (s) {
+      s.classList.toggle('on', s.getAttribute('data-k') === k);
+    });
+    if (focus) {
+      tab.focus();
+      tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
   }
+  tabs.forEach(function (t, n) {
+    t.addEventListener('click', function () { choose(t, false); });
+    t.addEventListener('keydown', function (e) {
+      var to = e.key === 'ArrowRight' ? n + 1 : e.key === 'ArrowLeft' ? n - 1 : null;
+      if (to === null) return;
+      e.preventDefault();
+      choose(tabs[(to + tabs.length) % tabs.length], true);
+    });
+  });
 
   // Install buttons for the phone in the visitor's hand.
   var ua = navigator.userAgent;

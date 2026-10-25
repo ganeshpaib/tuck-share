@@ -146,33 +146,106 @@
     </div>
 
     <section class="kinds" aria-labelledby="kinds-h">
-      <h2 id="kinds-h">Made for what you actually save</h2>
-      <div class="bento">
-        <article class="tile t-places">
-          <h3>Places to go</h3>
-          <p>Saves with a location go on your map. Map links find their own pin, and you can add a place to anything else. Filter by category or #tag.</p>
-          <div class="mini-map" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-        </article>
-        <article class="tile t-recipes">
-          <h3>Recipes you'll cook</h3>
-          <p>Make a Recipes category and recipe links go straight into it, tagged veg, quick or dessert.</p>
-          <div class="chips" aria-hidden="true"><span>veg</span><span>quick</span><span>dessert</span><span class="mine">#sunday</span></div>
-        </article>
-        <article class="tile t-search">
-          <h3>Search that remembers</h3>
-          <p>Find any save by a word from its title, caption, note, place or #tag.</p>
-          <div class="fake-search" aria-hidden="true"><span class="typed">rooftop</span></div>
-        </article>
-        <article class="tile t-digest">
-          <h3>A Sunday nudge</h3>
-          <p>Every Sunday morning, a reminder of saves you haven't opened in a while.</p>
-          <div class="notif" aria-hidden="true"><img src="icon.svg" alt=""><span><b>Your week in TuckMe</b><small>5 saves are waiting: Ramen Ichi, Miso aubergine, Sunset rooftop bar and 2 more.</small></span></div>
-        </article>
-        <article class="tile t-inbox">
-          <h3>Your own categories</h3>
-          <p>Date night, Gifts, Trips: make a category for anything, each in its own colour. Move a save any time with a swipe.</p>
-          <div class="cat-row" aria-hidden="true"><span style="background:#F4BFD8">Date night</span><span style="background:#E6D5B8">Trips</span><span style="background:#BDDCF3">Workouts</span><span style="background:#F6B9A8">Recipes</span><span style="background:#CFE0B5">Gifts</span></div>
-        </article>
+      <h2 id="kinds-h">Ways to find it again</h2>
+      <div class="kinds-tabs" role="tablist" aria-label="TuckMe features">
+        <button type="button" role="tab" id="k-places" aria-controls="kp-places" aria-selected="true" data-k="places" style="--k:#BFE3D0">Places</button>
+        <button type="button" role="tab" id="k-recipes" aria-controls="kp-recipes" aria-selected="false" tabindex="-1" data-k="recipes" style="--k:#F6B9A8">Recipes</button>
+        <button type="button" role="tab" id="k-search" aria-controls="kp-search" aria-selected="false" tabindex="-1" data-k="search" style="--k:#BDDCF3">Search</button>
+        <button type="button" role="tab" id="k-sunday" aria-controls="kp-sunday" aria-selected="false" tabindex="-1" data-k="sunday" style="--k:#CFCBF5">Sunday nudge</button>
+        <button type="button" role="tab" id="k-cats" aria-controls="kp-cats" aria-selected="false" tabindex="-1" data-k="cats" style="--k:#F8DC6B">Categories</button>
+      </div>
+
+      <div class="kinds-panel" data-k="places">
+        <div class="kinds-copy">
+          <div role="tabpanel" id="kp-places" aria-labelledby="k-places">
+            <h3>Every place, on one map</h3>
+            <p>Saves with a location get a pin. Map links find their own, and you can add a place to anything else. Filter by category or #tag, then tap Open in Maps.</p>
+          </div>
+          <div role="tabpanel" id="kp-recipes" aria-labelledby="k-recipes" hidden>
+            <h3>Recipes, tagged for you</h3>
+            <p>Make a Recipes category and recipe links go straight into it, tagged veg, quick or dessert. Add your own #tags too, then filter with a tap.</p>
+          </div>
+          <div role="tabpanel" id="kp-search" aria-labelledby="k-search" hidden>
+            <h3>Search what you remember</h3>
+            <p>Type any word you remember from a save: its title, caption, note, place or #tag.</p>
+          </div>
+          <div role="tabpanel" id="kp-sunday" aria-labelledby="k-sunday" hidden>
+            <h3>A nudge on Sunday</h3>
+            <p>Every Sunday at 10, a reminder of saves you haven't opened in a while. When there's nothing to say, there's no notification.</p>
+          </div>
+          <div role="tabpanel" id="kp-cats" aria-labelledby="k-cats" hidden>
+            <h3>Categories you make</h3>
+            <p>Date night, Gifts, Trips: make one for anything, each in its own colour. Swipe a save right to move it somewhere else.</p>
+          </div>
+        </div>
+
+        <div class="kinds-phone" aria-hidden="true">
+          <div class="screen">
+
+            <div class="ks ks-places on" data-k="places">
+              <svg class="ks-map" viewBox="0 0 300 330" preserveAspectRatio="xMidYMid slice">
+                <rect width="300" height="330" fill="#EEF2E2"/>
+                <path d="M-20 250 C 80 210, 150 290, 320 230" stroke="#C7E3F2" stroke-width="30" fill="none"/>
+                <path d="M50 -10 L 90 340 M 210 -10 L 180 340 M -10 90 L 310 140 M -10 190 L 310 170" stroke="#fff" stroke-width="11" fill="none"/>
+                <rect x="220" y="30" width="56" height="44" rx="12" fill="#D3E8C6"/>
+              </svg>
+              <span class="kpin" style="left:26%;top:22%"></span>
+              <span class="kpin" style="left:70%;top:15%;background:#7C6FD6"></span>
+              <span class="kpin" style="left:58%;top:35%;background:#E7896E"></span>
+              <span class="kyou" style="left:44%;top:40%"></span>
+              <div class="kchips"><i class="on">All</i><i>Date night</i><i>Unsorted</i><i>#brunch</i></div>
+              <div class="klist">
+                <div class="krow"><span class="thumb th-ramen"></span><span class="rt"><b>Ramen Ichi</b><small>Rua da Prata 12, Lisbon</small></span><em>Open in Maps</em></div>
+                <div class="krow"><span class="thumb th-bar"></span><span class="rt"><b>Sunset rooftop bar</b><small>Miradouro, Lisbon</small></span><em>Open in Maps</em></div>
+                <div class="krow"><span class="thumb th-cafe"></span><span class="rt"><b>Cute café in Porto</b><small>Rua das Flores, Porto</small></span><em>Open in Maps</em></div>
+              </div>
+            </div>
+
+            <div class="ks ks-recipes" data-k="recipes">
+              <div class="khead" style="background:#F6B9A8"><b>Recipes</b><small>41 saved</small></div>
+              <div class="kchips flat"><i>All</i><i>veg</i><i class="on">quick</i><i>dessert</i><i>#sunday</i></div>
+              <div class="kgrid">
+                <div class="kcard"><span class="kart th-miso"></span><b>Miso aubergine</b><small>veg · quick</small></div>
+                <div class="kcard"><span class="kart th-pasta"></span><b>Lemon pasta</b><small>quick · veg</small></div>
+                <div class="kcard"><span class="kart th-curry"></span><b>Green curry</b><small>quick</small></div>
+                <div class="kcard"><span class="kart th-tira"></span><b>Ten-minute tiramisu</b><small>quick · dessert</small></div>
+              </div>
+            </div>
+
+            <div class="ks ks-search" data-k="search">
+              <div class="ksearch"><i></i>rooftop</div>
+              <div class="kcount">4 results</div>
+              <div class="klist plain">
+                <div class="krow"><span class="thumb th-bar"></span><span class="rt"><b>Sunset rooftop bar</b><small>tiktok.com · #date-night</small></span></div>
+                <div class="krow"><span class="thumb th-pool"></span><span class="rt"><b>Hotel with a rooftop pool</b><small>instagram.com</small></span></div>
+                <div class="krow"><span class="thumb th-cafe"></span><span class="rt"><b>Rooftop cinema nights</b><small>youtube.com · #summer</small></span></div>
+                <div class="krow"><span class="thumb th-ramen"></span><span class="rt"><b>Rooftop brunch in Porto</b><small>instagram.com · #brunch</small></span></div>
+              </div>
+            </div>
+
+            <div class="ks ks-sunday" data-k="sunday">
+              <div class="klock"><span>Sunday 25 October</span><b>10:00</b></div>
+              <div class="knotif">
+                <div class="kn-top"><img src="icon.svg" alt=""><span>TuckMe</span><small>now</small></div>
+                <b>Your week in TuckMe</b>
+                <p>5 saves are waiting: Ramen Ichi, Miso aubergine, Sunset rooftop bar and 2 more.</p>
+              </div>
+            </div>
+
+            <div class="ks ks-cats" data-k="cats">
+              <div class="ktitle">Collections</div>
+              <div class="kcats">
+                <div style="background:#F4BFD8"><b>Date night</b><small>9 saved</small></div>
+                <div style="background:#F6B9A8"><b>Recipes</b><small>41 saved</small></div>
+                <div style="background:#E6D5B8"><b>Trips</b><small>12 saved</small></div>
+                <div style="background:#BDDCF3"><b>Workouts</b><small>6 saved</small></div>
+                <div style="background:#CFE0B5"><b>Gifts</b><small>8 saved</small></div>
+                <div style="background:#E3C4F0"><b>Watch later</b><small>17 saved</small></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
     </section>
 
