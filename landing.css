@@ -36,6 +36,9 @@
 }
 .mark { display: inline-flex; align-items: center; gap: 10px; font-weight: 900; font-size: 22px; letter-spacing: -0.02em; text-decoration: none; }
 .mark img { border-radius: 10px; }
+.top-links { display: flex; align-items: center; gap: 8px; }
+.top-insta { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--ink); }
+.top-insta svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .top-get { font-weight: 800; font-size: 15px; text-decoration: none; padding: 10px 16px; border-radius: 999px; border: 2px solid var(--ink); }
 
 /* ---- Hero ------------------------------------------------------------- */
