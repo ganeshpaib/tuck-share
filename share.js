@@ -1,7 +1,8 @@
 // TuckMe shared lists. The list lives in the link after "#": it is read here,
 // in the browser, and never sent to any server.
 
-const GET_TUCK = 'https://github.com/ganeshpaib/tuck-share/releases';
+// The landing page: what TuckMe is, and the Android download.
+const GET_TUCK = 'https://tuckme.app/';
 
 // No real link is longer; a real list inflates to a few KB. Both stop a
 // crafted link from filling the browser's memory.
@@ -174,17 +175,29 @@ export function renderBroken(doc, { isIphone }) {
       el(doc, 'div', { cls: 'buttons' }, getTuck(doc, isIphone))));
 }
 
-// In the browser: read the link and draw the page.
+/** Which page a visit shows: a link with anything after "#" is a shared list. */
+export function pageFor(hash) {
+  return hash && hash.length > 1 ? 'share' : 'landing';
+}
+
+// In the browser: a shared list draws its page; without one, the landing page
+// in index.html shows as it is.
 if (typeof window !== 'undefined' && window.document) {
   const doc = window.document;
-  const payload = window.location.hash.slice(1);
-  const isIphone = /iPhone|iPad|iPod/.test(window.navigator.userAgent);
-  decodePayload(payload).then((list) => {
-    if (list) {
-      doc.title = `${list.name} · TuckMe`;
-      render(list, doc, { payload, isIphone });
-    } else {
-      renderBroken(doc, { isIphone });
-    }
-  });
+  // Pasting a shared link into a tab already on the page only changes the hash.
+  window.addEventListener('hashchange', () => window.location.reload());
+  if (pageFor(window.location.hash) === 'share') {
+    doc.documentElement.classList.add('is-share');
+    const payload = window.location.hash.slice(1);
+    const isIphone = /iPhone|iPad|iPod/.test(window.navigator.userAgent);
+    decodePayload(payload).then((list) => {
+      if (list) {
+        doc.title = `${list.name} · TuckMe`;
+        render(list, doc, { payload, isIphone });
+      } else {
+        doc.title = 'Shared with you · TuckMe';
+        renderBroken(doc, { isIphone });
+      }
+    });
+  }
 }

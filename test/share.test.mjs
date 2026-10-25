@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { decodePayload, safeHref, render } from '../share.js';
+import { decodePayload, safeHref, render, pageFor } from '../share.js';
 
 const fixture = JSON.parse(
   readFileSync(new URL('./fixture.json', import.meta.url), 'utf8'),
@@ -92,7 +92,7 @@ test('the buttons: Get TuckMe on Android, coming soon on iPhone, Open in TuckMe'
   const android = fakeDocument();
   render(list, android, { payload: 'PAY', isIphone: false });
   const aHrefs = android.created.map((e) => e.attributes.href).filter(Boolean);
-  assert.ok(aHrefs.includes('https://github.com/ganeshpaib/tuck-share/releases'));
+  assert.ok(aHrefs.includes('https://tuckme.app/'));
   assert.ok(aHrefs.includes('tuck://share#PAY'));
   assert.ok(android.created.some((e) => e.textContent === '1 place shared with you'));
   const texts = android.created.map((e) => e.textContent);
@@ -103,7 +103,7 @@ test('the buttons: Get TuckMe on Android, coming soon on iPhone, Open in TuckMe'
   const iphone = fakeDocument();
   render(list, iphone, { payload: 'PAY', isIphone: true });
   assert.ok(iphone.created.some((e) => e.textContent === 'TuckMe for iPhone is coming soon'));
-  assert.ok(!iphone.created.some((e) => e.attributes.href === 'https://github.com/ganeshpaib/tuck-share/releases'));
+  assert.ok(!iphone.created.some((e) => e.attributes.href === 'https://tuckme.app/'));
 });
 
 test('a payload that inflates past 256 KB is refused', async () => {
@@ -117,4 +117,19 @@ test('a payload that inflates past 256 KB is refused', async () => {
 
 test('a payload longer than any real link is refused unread', async () => {
   assert.equal(await decodePayload('A'.repeat(16001)), null);
+});
+
+test('no list in the link shows the landing page; any list shows the shared view', () => {
+  assert.equal(pageFor(''), 'landing');
+  assert.equal(pageFor('#'), 'landing');
+  assert.equal(pageFor('#' + fixture.payload), 'share');
+  // A broken list still gets the shared view, which says the link couldn't be opened.
+  assert.equal(pageFor('#broken'), 'share');
+});
+
+test('the landing page links straight to the Android download', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('https://github.com/ganeshpaib/tuck-share/releases/latest/download/TuckMe.apk'));
+  assert.ok(html.includes('id="app"'));
+  assert.ok(html.includes('landing.js'));
 });
