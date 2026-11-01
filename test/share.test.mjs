@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { decodePayload, safeHref, thumbSrc, siteName, youTubeId, render, renderHome, renderBroken } from '../share.js';
+import { decodePayload, safeHref, thumbSrc, imageHref, siteName, youTubeId, render, renderHome, renderBroken } from '../share.js';
 
 const fixture = JSON.parse(
   readFileSync(new URL('./fixture.json', import.meta.url), 'utf8'),
@@ -209,10 +209,19 @@ test('a YouTube video shows its own picture, over the tile', () => {
   assert.ok(doc.created.some((e) => e.textContent === 'Y'), 'the tile stays underneath');
 });
 
-test("a picture from the link wins over YouTube's", () => {
+test('pictures are layered: tile, then the carried picture, then the web one on top', () => {
   const doc = fakeDocument();
-  render({ name: 'x', colorIndex: 0, places: [{ title: 'Dosa', url: 'https://youtu.be/dQw4w9WgXcQ', address: '', thumb: '/9j/4AA=' }] }, doc, { payload: 'p' });
-  const imgs = doc.created.filter((e) => e.tagName === 'IMG');
-  assert.ok(imgs.length > 0);
-  assert.ok(imgs.every((e) => e.attributes.src === 'data:image/jpeg;base64,/9j/4AA='));
+  render({ name: 'x', colorIndex: 0, places: [{ title: 'Lamp', url: 'https://amzn.in/d/1', address: '', thumb: '/9j/4AA=', image: 'https://m.media-amazon.com/images/I/61a.jpg' }] }, doc, { payload: 'p' });
+  const tile = doc.created.find((e) => e.className === 'row-pic tile');
+  assert.deepEqual(
+    tile.children.map((c) => c.attributes.src || c.textContent),
+    ['A', 'data:image/jpeg;base64,/9j/4AA=', 'https://m.media-amazon.com/images/I/61a.jpg'],
+  );
+});
+
+test('a picture address is used only if it is https', () => {
+  assert.equal(imageHref('https://m.media-amazon.com/images/I/61a.jpg'), 'https://m.media-amazon.com/images/I/61a.jpg');
+  for (const bad of ['http://a.com/x.jpg', 'javascript:alert(1)', 'data:image/png;base64,AA', '', null, `https://a.com/${'x'.repeat(400)}`]) {
+    assert.equal(imageHref(bad), null, String(bad).slice(0, 24));
+  }
 });

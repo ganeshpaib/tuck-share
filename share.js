@@ -63,6 +63,7 @@ export async function decodePayload(payload) {
         userTags: tags(p.g),
         tags: tags(p.r),
         thumb: str(p.i),
+        image: str(p.m),
       }));
     if (!places.length) return null;
     return {
@@ -151,12 +152,22 @@ export function youTubeId(url) {
 // Tiles for saves without a picture: the app's pastels, picked by site.
 const TILE = ['#CFCBF5', '#F6B9A8', '#CFE0B5', '#BDDCF3', '#F9CFA6', '#B5E6E6'];
 
-/** The save's picture, or a tile with its site's first letter. */
-function picture(doc, p, cls) {
-  const src = thumbSrc(p.thumb);
-  if (src) {
-    return el(doc, 'img', { cls: `${cls} photo`, attrs: { src, alt: '', width: '96', height: '96' } });
+/** A picture's web address from the link, if it is a plain https one. */
+export function imageHref(url) {
+  try {
+    return typeof url === 'string' && url.length <= 400 && new URL(url).protocol === 'https:' ? url : null;
+  } catch {
+    return null;
   }
+}
+
+/**
+ * The save's picture, in layers: a pastel tile with its site's first letter,
+ * the small picture carried in the link, and on top the picture from the web
+ * (its address from the link, or a YouTube video's own). A layer that fails
+ * to load is taken away, and the one beneath shows.
+ */
+function picture(doc, p, cls) {
   const name = siteName(p.url) || p.title || '?';
   let h = 0;
   for (const ch of siteOf(p.url)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
@@ -164,17 +175,16 @@ function picture(doc, p, cls) {
     cls: `${cls} tile`,
     attrs: { style: `background:${TILE[h % TILE.length]}`, 'aria-hidden': 'true' },
   }, el(doc, 'span', { text: name.charAt(0).toUpperCase(), cls: 'tile-letter' }));
-  // A YouTube video's picture is at a fixed address: shown over the tile,
-  // which stays if it doesn't load.
-  const video = youTubeId(p.url);
-  if (video) {
-    const img = el(doc, 'img', {
-      cls: 'tile-photo',
-      attrs: { src: `https://i.ytimg.com/vi/${video}/mqdefault.jpg`, alt: '', referrerpolicy: 'no-referrer' },
-    });
+  const layer = (src, extra = {}) => {
+    const img = el(doc, 'img', { cls: 'tile-photo', attrs: { src, alt: '', ...extra } });
     if (img.addEventListener) img.addEventListener('error', () => img.remove());
     tile.append(img);
-  }
+  };
+  const carried = thumbSrc(p.thumb);
+  if (carried) layer(carried);
+  const video = youTubeId(p.url);
+  const web = imageHref(p.image) || (video ? `https://i.ytimg.com/vi/${video}/mqdefault.jpg` : null);
+  if (web) layer(web, { referrerpolicy: 'no-referrer', loading: 'lazy' });
   return tile;
 }
 
