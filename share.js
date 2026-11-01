@@ -132,6 +132,22 @@ export function thumbSrc(thumb) {
     : null;
 }
 
+/** The video's id in a YouTube link (watch, youtu.be, Shorts, live, embed), or null. */
+export function youTubeId(url) {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^(www|m|music)\./, '');
+    let id = null;
+    if (host === 'youtu.be') id = u.pathname.slice(1).split('/')[0];
+    else if (host === 'youtube.com' || host === 'youtube-nocookie.com') {
+      id = u.searchParams.get('v') || (u.pathname.match(/^\/(?:shorts|live|embed)\/([^/?#]+)/) || [])[1];
+    }
+    return id && /^[A-Za-z0-9_-]{11}$/.test(id) ? id : null;
+  } catch {
+    return null;
+  }
+}
+
 // Tiles for saves without a picture: the app's pastels, picked by site.
 const TILE = ['#CFCBF5', '#F6B9A8', '#CFE0B5', '#BDDCF3', '#F9CFA6', '#B5E6E6'];
 
@@ -144,10 +160,22 @@ function picture(doc, p, cls) {
   const name = siteName(p.url) || p.title || '?';
   let h = 0;
   for (const ch of siteOf(p.url)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return el(doc, 'span', {
+  const tile = el(doc, 'span', {
     cls: `${cls} tile`,
     attrs: { style: `background:${TILE[h % TILE.length]}`, 'aria-hidden': 'true' },
   }, el(doc, 'span', { text: name.charAt(0).toUpperCase(), cls: 'tile-letter' }));
+  // A YouTube video's picture is at a fixed address: shown over the tile,
+  // which stays if it doesn't load.
+  const video = youTubeId(p.url);
+  if (video) {
+    const img = el(doc, 'img', {
+      cls: 'tile-photo',
+      attrs: { src: `https://i.ytimg.com/vi/${video}/mqdefault.jpg`, alt: '', referrerpolicy: 'no-referrer' },
+    });
+    if (img.addEventListener) img.addEventListener('error', () => img.remove());
+    tile.append(img);
+  }
+  return tile;
 }
 
 /** The save tucked into a TuckMe pocket: back pocket, the picture, the stitched front. */

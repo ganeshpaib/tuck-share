@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { decodePayload, safeHref, thumbSrc, siteName, render, renderHome, renderBroken } from '../share.js';
+import { decodePayload, safeHref, thumbSrc, siteName, youTubeId, render, renderHome, renderBroken } from '../share.js';
 
 const fixture = JSON.parse(
   readFileSync(new URL('./fixture.json', import.meta.url), 'utf8'),
@@ -188,4 +188,31 @@ test('sites are named the way people say them', () => {
   assert.equal(siteName('https://www.google.com/maps/place/x'), 'Google Maps');
   assert.equal(siteName('https://www.google.com/search?q=x'), 'google.com');
   assert.equal(siteName('https://sugarbloom.com/menu'), 'sugarbloom.com');
+});
+
+test('a YouTube video shows its own picture, over the tile', () => {
+  for (const url of [
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=1',
+    'https://youtu.be/dQw4w9WgXcQ?si=x',
+    'https://m.youtube.com/shorts/dQw4w9WgXcQ',
+    'https://www.youtube.com/live/dQw4w9WgXcQ',
+  ]) {
+    assert.equal(youTubeId(url), 'dQw4w9WgXcQ', url);
+  }
+  for (const url of ['https://www.youtube.com/@channel', 'https://evil.com/watch?v=dQw4w9WgXcQ', 'https://youtu.be/<b>', 'nope']) {
+    assert.equal(youTubeId(url), null, url);
+  }
+  const doc = fakeDocument();
+  render({ name: 'x', colorIndex: 0, places: [{ title: 'Dosa', url: 'https://youtu.be/dQw4w9WgXcQ', address: '' }] }, doc, { payload: 'p' });
+  const img = doc.created.find((e) => e.tagName === 'IMG');
+  assert.equal(img.attributes.src, 'https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg');
+  assert.ok(doc.created.some((e) => e.textContent === 'Y'), 'the tile stays underneath');
+});
+
+test("a picture from the link wins over YouTube's", () => {
+  const doc = fakeDocument();
+  render({ name: 'x', colorIndex: 0, places: [{ title: 'Dosa', url: 'https://youtu.be/dQw4w9WgXcQ', address: '', thumb: '/9j/4AA=' }] }, doc, { payload: 'p' });
+  const imgs = doc.created.filter((e) => e.tagName === 'IMG');
+  assert.ok(imgs.length > 0);
+  assert.ok(imgs.every((e) => e.attributes.src === 'data:image/jpeg;base64,/9j/4AA='));
 });
