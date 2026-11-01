@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { decodePayload, safeHref, render, renderHome, renderBroken } from '../share.js';
+import { decodePayload, safeHref, thumbSrc, siteName, render, renderHome, renderBroken } from '../share.js';
 
 const fixture = JSON.parse(
   readFileSync(new URL('./fixture.json', import.meta.url), 'utf8'),
@@ -135,4 +135,57 @@ test('a broken link offers no download either', () => {
   const doc = fakeDocument();
   renderBroken(doc, { isIphone: false });
   assert.ok(!linksToApp(doc));
+});
+
+const single = JSON.parse(
+  readFileSync(new URL('./fixture_single.json', import.meta.url), 'utf8'),
+);
+
+test('one save shared on its own: the page leads with the save', async () => {
+  const list = await decodePayload(single.payload);
+  assert.equal(list.single, true);
+  assert.equal(list.places.length, 1);
+  const doc = fakeDocument();
+  render(list, doc, { payload: single.payload, isIphone: true });
+  const texts = doc.created.map((e) => e.textContent);
+  for (const t of [single.title, 'Shared with you from TuckMe', 'Keep it in TuckMe', 'Open in TuckMe']) {
+    assert.ok(texts.includes(t), t);
+  }
+  assert.ok(!texts.includes('Shared'), 'not the collection name it lands in');
+  assert.equal(list.places[0].thumb, single.thumb);
+  const img = doc.created.find((e) => e.tagName === 'IMG');
+  assert.equal(img.attributes.src, `data:image/jpeg;base64,${single.thumb}`);
+  assert.ok(texts.includes('Open on Instagram'));
+  const hrefs = doc.created.map((e) => e.attributes.href).filter(Boolean);
+  assert.ok(hrefs.includes(single.url));
+  assert.ok(hrefs.includes(`tuck://share#${single.payload}`));
+  assert.ok(!linksToApp(doc));
+});
+
+test('a shared category is not read as one save', async () => {
+  assert.equal((await decodePayload(fixture.payload)).single, false);
+});
+
+test('only plain base64 becomes a picture', () => {
+  assert.equal(thumbSrc('/9j/4AA='), 'data:image/jpeg;base64,/9j/4AA=');
+  for (const bad of ['', null, '"><script>', 'javascript:x', 'a b', 'A'.repeat(8001)]) {
+    assert.equal(thumbSrc(bad), null, String(bad).slice(0, 20));
+  }
+});
+
+test("a save with no picture gets a tile with its site's letter", () => {
+  const doc = fakeDocument();
+  render({ name: 'x', colorIndex: 0, places: [{ title: 'Ramen', url: 'https://maps.app.goo.gl/x', address: '' }] }, doc, { payload: 'p' });
+  const texts = doc.created.map((e) => e.textContent);
+  assert.ok(texts.includes('G'));
+  assert.ok(!doc.created.some((e) => e.tagName === 'IMG'));
+});
+
+test('sites are named the way people say them', () => {
+  assert.equal(siteName('https://www.instagram.com/reel/a/'), 'Instagram');
+  assert.equal(siteName('https://youtu.be/a'), 'YouTube');
+  assert.equal(siteName('https://maps.app.goo.gl/a'), 'Google Maps');
+  assert.equal(siteName('https://www.google.com/maps/place/x'), 'Google Maps');
+  assert.equal(siteName('https://www.google.com/search?q=x'), 'google.com');
+  assert.equal(siteName('https://sugarbloom.com/menu'), 'sugarbloom.com');
 });

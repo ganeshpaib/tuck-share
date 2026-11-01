@@ -16,4 +16,4 @@ The page that opens when someone shares a category from the **TuckMe** app
 - Plain HTML, CSS and JavaScript; no build step, no tracking.
 
 Tests (Node 18+): `npm test`. They decode a link made by the app's own encoder
-(`test/fixture.json`) and check that shared text is never turned into markup.
+(`test/fixture.json`, and `test/fixture_single.json` for one save shared on its own) and check that shared text is never turned into markup.

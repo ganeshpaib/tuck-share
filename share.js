@@ -62,12 +62,15 @@ export async function decodePayload(payload) {
         lng: num(p.x),
         userTags: tags(p.g),
         tags: tags(p.r),
+        thumb: str(p.i),
       }));
     if (!places.length) return null;
     return {
       name: json.n,
       colorIndex: Number.isInteger(json.c) ? json.c : 0,
       places,
+      // One save shared on its own, not a whole category.
+      single: json.s === 1,
     };
   } catch {
     // Cut short, re-encoded by a chat app, or not a TuckMe link at all.
@@ -102,6 +105,60 @@ function siteOf(url) {
   }
 }
 
+/** What people call the site [url] is on: "Instagram", "Google Maps", or its address. */
+export function siteName(url) {
+  const host = siteOf(url);
+  if (/(^|\.)instagram\.com$/.test(host)) return 'Instagram';
+  if (/(^|\.)(youtube\.com|youtu\.be)$/.test(host)) return 'YouTube';
+  if (/(^|\.)tiktok\.com$/.test(host)) return 'TikTok';
+  if (/^maps\.app\.goo\.gl$|^goo\.gl$|^maps\.google\./.test(host) || /google\.[a-z.]+$/.test(host) && /\/maps/.test(url)) {
+    return 'Google Maps';
+  }
+  if (/(^|\.)maps\.apple\.com$/.test(host)) return 'Apple Maps';
+  return host;
+}
+
+/** The button that leaves for the save's own site. */
+function openLabel(url) {
+  const name = siteName(url);
+  if (/Maps$/.test(name)) return `Open in ${name}`;
+  return name ? `Open on ${name}` : 'Open the link';
+}
+
+/** A thumbnail's data: URL, only for plain base64 (nothing else becomes a src). */
+export function thumbSrc(thumb) {
+  return typeof thumb === 'string' && thumb && thumb.length <= 8000 && /^[A-Za-z0-9+/]+={0,2}$/.test(thumb)
+    ? `data:image/jpeg;base64,${thumb}`
+    : null;
+}
+
+// Tiles for saves without a picture: the app's pastels, picked by site.
+const TILE = ['#CFCBF5', '#F6B9A8', '#CFE0B5', '#BDDCF3', '#F9CFA6', '#B5E6E6'];
+
+/** The save's picture, or a tile with its site's first letter. */
+function picture(doc, p, cls) {
+  const src = thumbSrc(p.thumb);
+  if (src) {
+    return el(doc, 'img', { cls: `${cls} photo`, attrs: { src, alt: '', width: '96', height: '96' } });
+  }
+  const name = siteName(p.url) || p.title || '?';
+  let h = 0;
+  for (const ch of siteOf(p.url)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return el(doc, 'span', {
+    cls: `${cls} tile`,
+    attrs: { style: `background:${TILE[h % TILE.length]}`, 'aria-hidden': 'true' },
+  }, el(doc, 'span', { text: name.charAt(0).toUpperCase(), cls: 'tile-letter' }));
+}
+
+/** The save tucked into a TuckMe pocket: back pocket, the picture, the stitched front. */
+function pocket(doc, p, label) {
+  return el(doc, 'div', { cls: 'pocket', attrs: { 'aria-hidden': 'true' } },
+    el(doc, 'span', { cls: 'pocket-back' }),
+    el(doc, 'span', { cls: 'pocket-card' }, picture(doc, p, 'pocket-pic')),
+    el(doc, 'span', { cls: 'pocket-front' },
+      el(doc, 'span', { text: label, cls: 'pocket-label' })));
+}
+
 function header(doc) {
   return el(doc, 'header', { cls: 'brand' },
     el(doc, 'span', { cls: 'logo', attrs: { 'aria-hidden': 'true' } }),
@@ -113,31 +170,77 @@ function getTuck(doc) {
   return el(doc, 'p', { text: 'TuckMe is coming soon', cls: 'soon' });
 }
 
+function openInTuck(doc, payload) {
+  return el(doc, 'a', {
+    text: 'Open in TuckMe',
+    cls: 'button dark',
+    attrs: { href: `tuck://share#${payload}` },
+  });
+}
+
+/** One save shared on its own: the save in its pocket, then where to open it. */
+function renderOne(p, doc, { payload }) {
+  const href = safeHref(p.url);
+  const title = p.title || siteName(p.url) || 'A save';
+  const where = p.address || p.userLocation;
+  const site = siteName(p.url);
+  const page = el(doc, 'section', { cls: 'one' },
+    header(doc),
+    pocket(doc, p, site || 'Saved'),
+    el(doc, 'div', { cls: 'one-text' },
+      el(doc, 'p', { text: 'Shared with you from TuckMe', cls: 'kicker' }),
+      el(doc, 'h1', { text: title }),
+      where ? el(doc, 'p', { text: where, cls: 'where' }) : el(doc, 'p', { text: site, cls: 'where' })),
+    el(doc, 'div', { cls: 'buttons' },
+      openInTuck(doc, payload),
+      href
+        ? el(doc, 'a', {
+          text: openLabel(p.url),
+          cls: 'button light',
+          attrs: { href, target: '_blank', rel: 'noopener noreferrer' },
+        })
+        : el(doc, 'span', { text: '' })));
+  const keep = el(doc, 'section', { cls: 'keep' },
+    el(doc, 'h2', { text: 'Keep it in TuckMe' }),
+    el(doc, 'p', { text: 'Tuck it away. Find it when it counts.', cls: 'tagline' }),
+    getTuck(doc));
+  doc.getElementById('app').append(page, keep);
+}
+
 /**
  * Builds the page for [list] inside the element with id "app". Every piece of
  * shared text goes in through textContent, so a title can never become markup.
  */
 export function render(list, doc, { payload, isIphone }) {
+  if (list.single && list.places.length) {
+    renderOne(list.places[0], doc, { payload, isIphone });
+    return;
+  }
   const root = doc.getElementById('app');
   const n = list.places.length;
+  const cover = list.places.find((p) => thumbSrc(p.thumb)) || list.places[0];
   const band = el(doc, 'section', {
     cls: 'band',
     attrs: { style: `background:${PALETTE[Math.abs(list.colorIndex) % PALETTE.length]}` },
   },
   header(doc),
-  el(doc, 'h1', { text: list.name }),
-  el(doc, 'p', { text: `${n} ${n === 1 ? 'place' : 'places'} shared with you`, cls: 'count' }));
+  el(doc, 'div', { cls: 'band-row' },
+    el(doc, 'div', { cls: 'band-text' },
+      el(doc, 'h1', { text: list.name }),
+      el(doc, 'p', { text: `${n} ${n === 1 ? 'place' : 'places'} shared with you`, cls: 'count' })),
+    el(doc, 'div', { cls: 'mini' }, pocket(doc, cover, `${n}`))));
 
   const rows = list.places.map((p) => {
     const href = safeHref(p.url);
-    const detail = p.address || p.userLocation || siteOf(p.url);
+    const detail = p.address || p.userLocation || siteName(p.url);
     return el(doc, 'li', { cls: 'row' },
+      picture(doc, p, 'row-pic'),
       el(doc, 'div', { cls: 'row-text' },
-        el(doc, 'div', { text: p.title || siteOf(p.url), cls: 'title' }),
+        el(doc, 'div', { text: p.title || siteName(p.url), cls: 'title' }),
         el(doc, 'div', { text: detail, cls: 'detail' })),
       href
         ? el(doc, 'a', {
-          text: 'Open ↗',
+          text: 'Open',
           cls: 'open',
           attrs: { href, target: '_blank', rel: 'noopener noreferrer' },
         })
@@ -146,14 +249,8 @@ export function render(list, doc, { payload, isIphone }) {
 
   const keep = el(doc, 'section', { cls: 'keep' },
     el(doc, 'h2', { text: 'Keep these in TuckMe' }),
-    el(doc, 'p', { text: 'Save them, see them on a map.' }),
-    el(doc, 'div', { cls: 'buttons' },
-      getTuck(doc),
-      el(doc, 'a', {
-        text: 'Open in TuckMe',
-        cls: 'button light',
-        attrs: { href: `tuck://share#${payload}` },
-      })),
+    el(doc, 'p', { text: 'Pick the ones you want, and find them on a map later.' }),
+    el(doc, 'div', { cls: 'buttons' }, openInTuck(doc, payload), getTuck(doc)),
     el(doc, 'p', { text: 'Update TuckMe to open shared lists.', cls: 'note' }));
 
   root.append(band, el(doc, 'ul', { cls: 'list' }, ...rows), keep);
@@ -204,7 +301,8 @@ if (typeof window !== 'undefined' && window.document) {
     renderHome(doc);
   } else decodePayload(payload).then((list) => {
     if (list) {
-      doc.title = `${list.name} · TuckMe`;
+      const one = list.single ? list.places[0] : null;
+      doc.title = `${one ? one.title || siteName(one.url) || 'A save' : list.name} · TuckMe`;
       render(list, doc, { payload, isIphone });
     } else {
       renderBroken(doc, { isIphone });
