@@ -256,13 +256,14 @@ function picture(doc, p, cls) {
   return tile;
 }
 
-/** The save tucked into a TuckMe pocket: back pocket, the picture, the stitched front. */
+/** The save tucked into a TuckMe pocket: back pocket, the picture, the stitched front (with [label] on it, if any). */
 function pocket(doc, p, label) {
   return el(doc, 'div', { cls: 'pocket', attrs: { 'aria-hidden': 'true' } },
     el(doc, 'span', { cls: 'pocket-back' }),
     el(doc, 'span', { cls: 'pocket-card' }, picture(doc, p, 'pocket-pic')),
-    el(doc, 'span', { cls: 'pocket-front' },
-      el(doc, 'span', { text: label, cls: 'pocket-label' })));
+    label
+      ? el(doc, 'span', { cls: 'pocket-front' }, el(doc, 'span', { text: label, cls: 'pocket-label' }))
+      : el(doc, 'span', { cls: 'pocket-front' }));
 }
 
 function header(doc) {
@@ -334,7 +335,8 @@ export function render(list, doc, { payload, isIphone }) {
     el(doc, 'div', { cls: 'band-text' },
       el(doc, 'h1', { text: list.name }),
       el(doc, 'p', { text: `${n} ${n === 1 ? 'place' : 'places'} shared with you`, cls: 'count' })),
-    el(doc, 'div', { cls: 'mini' }, pocket(doc, cover, `${n}`))));
+    // The count is already in words beside it.
+    el(doc, 'div', { cls: 'mini' }, pocket(doc, cover, ''))));
 
   const rows = list.places.map((p) => {
     const href = safeHref(p.url);
