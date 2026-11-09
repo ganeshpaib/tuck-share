@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { decodePayload, safeHref, thumbSrc, imageHref, siteName, youTubeId, render, renderHome, renderBroken } from '../share.js';
+import { decodePayload, safeHref, thumbSrc, imageHref, siteName, youTubeId, brandIcon, siteIcon, render, renderHome, renderBroken } from '../share.js';
 
 const fixture = JSON.parse(
   readFileSync(new URL('./fixture.json', import.meta.url), 'utf8'),
@@ -78,8 +78,10 @@ test('titles with HTML are shown as text', () => {
     { payload: 'p', isIphone: false },
   );
   const tags = doc.created.map((e) => e.tagName);
-  assert.ok(!tags.includes('IMG'));
   assert.ok(!tags.includes('SCRIPT'));
+  // The only pictures are the page's own: a.com's icon, never the title's.
+  const srcs = doc.created.filter((e) => e.tagName === 'IMG').map((e) => e.attributes.src);
+  assert.deepEqual(srcs, ['https://a.com/favicon.ico']);
   const texts = doc.created.map((e) => e.textContent);
   assert.ok(texts.includes('<img src=x onerror=alert(1)>'));
   const hrefs = doc.created.map((e) => e.attributes.href).filter(Boolean);
@@ -153,8 +155,10 @@ test('one save shared on its own: the page leads with the save', async () => {
   }
   assert.ok(!texts.includes('Shared'), 'not the collection name it lands in');
   assert.equal(list.places[0].thumb, single.thumb);
-  const img = doc.created.find((e) => e.tagName === 'IMG');
-  assert.equal(img.attributes.src, `data:image/jpeg;base64,${single.thumb}`);
+  const srcs = doc.created.filter((e) => e.tagName === 'IMG').map((e) => e.attributes.src);
+  assert.equal(srcs.length, 2);
+  assert.ok(srcs[0].startsWith('data:image/svg+xml,'), 'the Instagram icon underneath');
+  assert.equal(srcs[1], `data:image/jpeg;base64,${single.thumb}`);
   assert.ok(texts.includes('Open on Instagram'));
   const hrefs = doc.created.map((e) => e.attributes.href).filter(Boolean);
   assert.ok(hrefs.includes(single.url));
@@ -173,12 +177,40 @@ test('only plain base64 becomes a picture', () => {
   }
 });
 
-test("a save with no picture gets a tile with its site's letter", () => {
+test('a save with no picture shows the app it came from, over its letter', () => {
   const doc = fakeDocument();
   render({ name: 'x', colorIndex: 0, places: [{ title: 'Ramen', url: 'https://maps.app.goo.gl/x', address: '' }] }, doc, { payload: 'p' });
-  const texts = doc.created.map((e) => e.textContent);
-  assert.ok(texts.includes('G'));
-  assert.ok(!doc.created.some((e) => e.tagName === 'IMG'));
+  const tile = doc.created.find((e) => e.className === 'row-pic tile');
+  assert.equal(tile.children[0].textContent, 'G', 'the letter stays underneath');
+  assert.equal(tile.children[1].attributes.src, brandIcon('https://maps.app.goo.gl/x'));
+  assert.equal(tile.children.length, 2);
+});
+
+test('the common apps have their icons drawn in; other sites use their own', () => {
+  for (const url of [
+    'https://www.instagram.com/reel/a/',
+    'https://youtu.be/a',
+    'https://www.tiktok.com/@x/video/1',
+    'https://maps.app.goo.gl/a',
+    'https://maps.apple.com/?q=x',
+    'https://pin.it/a',
+    'https://www.facebook.com/x',
+    'https://x.com/a/status/1',
+    'https://amzn.in/d/1',
+    'https://www.amazon.co.uk/dp/1',
+  ]) {
+    assert.ok(brandIcon(url)?.startsWith('data:image/svg+xml,'), url);
+  }
+  assert.equal(brandIcon('https://sugarbloom.com/menu'), null);
+  assert.equal(brandIcon('https://notinstagram.com/x'), null);
+  assert.equal(siteIcon('https://www.airbnb.co.in/rooms/1?x=1'), 'https://www.airbnb.co.in/favicon.ico');
+  assert.equal(siteIcon('http://a.com/x'), 'https://a.com/favicon.ico');
+  assert.equal(siteIcon('javascript:alert(1)'), null);
+  const doc = fakeDocument();
+  render({ name: 'x', colorIndex: 0, places: [{ title: 'Stay', url: 'https://www.airbnb.co.in/rooms/1', address: '' }] }, doc, { payload: 'p' });
+  const icon = doc.created.find((e) => e.className === 'tile-icon');
+  assert.equal(icon.attributes.src, 'https://www.airbnb.co.in/favicon.ico');
+  assert.equal(icon.attributes.referrerpolicy, 'no-referrer');
 });
 
 test('sites are named the way people say them', () => {
@@ -204,18 +236,18 @@ test('a YouTube video shows its own picture, over the tile', () => {
   }
   const doc = fakeDocument();
   render({ name: 'x', colorIndex: 0, places: [{ title: 'Dosa', url: 'https://youtu.be/dQw4w9WgXcQ', address: '' }] }, doc, { payload: 'p' });
-  const img = doc.created.find((e) => e.tagName === 'IMG');
-  assert.equal(img.attributes.src, 'https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg');
+  const imgs = doc.created.filter((e) => e.tagName === 'IMG');
+  assert.equal(imgs.at(-1).attributes.src, 'https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg');
   assert.ok(doc.created.some((e) => e.textContent === 'Y'), 'the tile stays underneath');
 });
 
-test('pictures are layered: tile, then the carried picture, then the web one on top', () => {
+test('pictures are layered: tile, app icon, then the carried picture, then the web one on top', () => {
   const doc = fakeDocument();
   render({ name: 'x', colorIndex: 0, places: [{ title: 'Lamp', url: 'https://amzn.in/d/1', address: '', thumb: '/9j/4AA=', image: 'https://m.media-amazon.com/images/I/61a.jpg' }] }, doc, { payload: 'p' });
   const tile = doc.created.find((e) => e.className === 'row-pic tile');
   assert.deepEqual(
     tile.children.map((c) => c.attributes.src || c.textContent),
-    ['A', 'data:image/jpeg;base64,/9j/4AA=', 'https://m.media-amazon.com/images/I/61a.jpg'],
+    ['A', brandIcon('https://amzn.in/d/1'), 'data:image/jpeg;base64,/9j/4AA=', 'https://m.media-amazon.com/images/I/61a.jpg'],
   );
 });
 

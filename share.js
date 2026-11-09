@@ -149,6 +149,68 @@ export function youTubeId(url) {
   }
 }
 
+// The apps saves most often come from, drawn as their app icons (simplified,
+// on a 48 grid), so a place without a picture still shows where it is from.
+const svg = (body) => `data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">${body}</svg>`,
+)}`;
+const BRANDS = [
+  {
+    host: /(^|\.)instagram\.com$/,
+    icon: svg('<defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FEDA75"/><stop offset=".3" stop-color="#FA7E1E"/><stop offset=".55" stop-color="#D62976"/><stop offset=".8" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect width="48" height="48" fill="url(#g)"/><rect x="11" y="11" width="26" height="26" rx="8" fill="none" stroke="#fff" stroke-width="3.2"/><circle cx="24" cy="24" r="6.2" fill="none" stroke="#fff" stroke-width="3.2"/><circle cx="31.6" cy="16.4" r="1.9" fill="#fff"/>'),
+  },
+  {
+    host: /(^|\.)(youtube\.com|youtu\.be|youtube-nocookie\.com)$/,
+    icon: svg('<rect width="48" height="48" fill="#fff"/><rect x="7" y="13" width="34" height="23" rx="7" fill="#FF0000"/><path d="M21 19v11l9.5-5.5z" fill="#fff"/>'),
+  },
+  {
+    host: /(^|\.)tiktok\.com$/,
+    icon: svg('<rect width="48" height="48" fill="#111"/><g transform="translate(-1 -1)"><path d="M27 11h5c.4 3.4 2.6 5.8 6 6.1v5c-2.2 0-4.2-.7-6-1.9V30a8.6 8.6 0 1 1-8.6-8.6v5.1a3.6 3.6 0 1 0 3.6 3.5z" fill="#25F4EE"/></g><g transform="translate(1 1)"><path d="M27 11h5c.4 3.4 2.6 5.8 6 6.1v5c-2.2 0-4.2-.7-6-1.9V30a8.6 8.6 0 1 1-8.6-8.6v5.1a3.6 3.6 0 1 0 3.6 3.5z" fill="#FE2C55"/></g><path d="M27 11h5c.4 3.4 2.6 5.8 6 6.1v5c-2.2 0-4.2-.7-6-1.9V30a8.6 8.6 0 1 1-8.6-8.6v5.1a3.6 3.6 0 1 0 3.6 3.5z" fill="#fff"/>'),
+  },
+  {
+    name: 'Google Maps',
+    icon: svg('<rect width="48" height="48" fill="#fff"/><path d="M24 7c-7 0-12.5 5.4-12.5 12.2C11.5 28.4 24 41 24 41s12.5-12.6 12.5-21.8C36.5 12.4 31 7 24 7z" fill="#EA4335"/><path d="M14 13.5l6.5 5.4c.5-2.2 2-3.6 3.5-4L18.2 9.4A12.6 12.6 0 0 0 14 13.5z" fill="#1A73E8"/><path d="M11.5 19.2c0 3.3 1.6 7 3.9 10.4l7-8.4a4.6 4.6 0 0 1-1.9-2.3z" fill="#FBBC04"/><path d="M15.4 29.6C19 35 24 41 24 41s5-5 8.8-11.3L28 24.5z" fill="#34A853"/><circle cx="24" cy="19.4" r="4.4" fill="#fff"/>'),
+  },
+  {
+    name: 'Apple Maps',
+    icon: svg('<defs><linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5BD068"/><stop offset="1" stop-color="#1C8CF2"/></linearGradient></defs><rect width="48" height="48" fill="url(#a)"/><path d="M24 11l10 26-10-5.5L14 37z" fill="#fff"/>'),
+  },
+  {
+    host: /(^|\.)(pinterest\.[a-z.]+|pin\.it)$/,
+    icon: svg('<rect width="48" height="48" fill="#E60023"/><path d="M24.6 10C16.8 10 12.7 15 12.7 20.6c0 2.6 1.4 5.8 3.6 6.8.3.2.5.1.6-.2l.5-2c0-.2 0-.4-.2-.6-.7-.9-1.3-2.5-1.3-4 0-3.9 2.9-7.6 7.9-7.6 4.3 0 7.3 2.9 7.3 7.1 0 4.7-2.4 8-5.5 8-1.7 0-3-1.4-2.6-3.2.5-2.1 1.5-4.3 1.5-5.8 0-1.3-.7-2.4-2.2-2.4-1.7 0-3.1 1.8-3.1 4.2 0 1.5.5 2.6.5 2.6l-2 8.5c-.6 2.5.1 6.5.1 6.9 0 .2.3.3.4.1.3-.4 3-4.3 3.7-6.9l1-4c.6 1.1 2.2 2 4 2 5.3 0 9.1-4.9 9.1-10.9C38.1 14.6 33.4 10 24.6 10z" fill="#fff"/>'),
+  },
+  {
+    host: /(^|\.)(facebook\.com|fb\.com|fb\.watch)$/,
+    icon: svg('<rect width="48" height="48" fill="#1877F2"/><path d="M26.6 40V26.4h4.6l.7-5.3h-5.3v-3.4c0-1.5.4-2.6 2.6-2.6H32v-4.7c-.5-.1-2.1-.2-4-.2-4 0-6.7 2.4-6.7 6.9v4h-4.5v5.3h4.5V40z" fill="#fff"/>'),
+  },
+  {
+    host: /(^|\.)(x\.com|twitter\.com)$/,
+    icon: svg('<rect width="48" height="48" fill="#111"/><path d="M13 12h7.4l5.6 7.6L32.6 12h3.2l-8.4 9.6L36 36h-7.4l-6-8.2L15.3 36h-3.2l9-10.4z" fill="#fff"/>'),
+  },
+  {
+    host: /(^|\.)(amazon\.[a-z.]+|amzn\.[a-z]+|a\.co)$/,
+    icon: svg('<rect width="48" height="48" fill="#232F3E"/><text x="24" y="28" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="20" fill="#fff">a</text><path d="M13 31.5c7 4.4 15 4.4 22 0" fill="none" stroke="#FF9900" stroke-width="2.6" stroke-linecap="round"/><path d="M31.6 29.6l3.6 1.8-1.6 3.6" fill="none" stroke="#FF9900" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'),
+  },
+];
+
+/** The app icon for [url]'s site, as an image source, or null. */
+export function brandIcon(url) {
+  const host = siteOf(url);
+  const name = siteName(url);
+  const brand = BRANDS.find((b) => (b.host ? b.host.test(host) : b.name === name));
+  return brand ? brand.icon : null;
+}
+
+/** The site's own icon (its favicon), for sites without a drawn one. */
+export function siteIcon(url) {
+  try {
+    const u = new URL(url);
+    return u.protocol === 'https:' || u.protocol === 'http:' ? `https://${u.hostname}/favicon.ico` : null;
+  } catch {
+    return null;
+  }
+}
+
 // Tiles for saves without a picture: the app's pastels, picked by site.
 const TILE = ['#CFCBF5', '#F6B9A8', '#CFE0B5', '#BDDCF3', '#F9CFA6', '#B5E6E6'];
 
@@ -163,7 +225,9 @@ export function imageHref(url) {
 
 /**
  * The save's picture, in layers: a pastel tile with its site's first letter,
- * the small picture carried in the link, and on top the picture from the web
+ * the app icon it came from (drawn here for the common ones, else the site's
+ * own icon), the small picture carried in the link, and on top the picture
+ * from the web
  * (its address from the link, or a YouTube video's own). A layer that fails
  * to load is taken away, and the one beneath shows.
  */
@@ -175,11 +239,15 @@ function picture(doc, p, cls) {
     cls: `${cls} tile`,
     attrs: { style: `background:${TILE[h % TILE.length]}`, 'aria-hidden': 'true' },
   }, el(doc, 'span', { text: name.charAt(0).toUpperCase(), cls: 'tile-letter' }));
-  const layer = (src, extra = {}) => {
-    const img = el(doc, 'img', { cls: 'tile-photo', attrs: { src, alt: '', ...extra } });
+  const layer = (src, extra = {}, kind = 'tile-photo') => {
+    const img = el(doc, 'img', { cls: kind, attrs: { src, alt: '', ...extra } });
     if (img.addEventListener) img.addEventListener('error', () => img.remove());
     tile.append(img);
   };
+  const brand = brandIcon(p.url);
+  const own = brand ? null : siteIcon(p.url);
+  if (brand) layer(brand);
+  else if (own) layer(own, { referrerpolicy: 'no-referrer', loading: 'lazy' }, 'tile-icon');
   const carried = thumbSrc(p.thumb);
   if (carried) layer(carried);
   const video = youTubeId(p.url);
