@@ -87,8 +87,10 @@ main:has(.one) { max-width: none; padding-bottom: 0; background: var(--butter); 
 .mini { position: relative; width: 118px; height: 110px; flex: none; overflow: visible; }
 .mini .pocket { position: absolute; left: 0; top: 0; transform: scale(0.5); transform-origin: 0 0; margin: 0; }
 .mini .pocket-label { font-size: 30px; top: 14px; }
-.list { list-style: none; margin: 18px 0 0; padding: 0 16px; display: grid; gap: 10px; }
-.row { display: flex; align-items: center; gap: 14px; background: var(--card); border-radius: 20px; padding: 10px 12px 10px 10px; }
+/* minmax(0, 1fr): a row is never wider than the screen, however long its
+   one-line detail (a grid column otherwise grows to fit it). */
+.list { list-style: none; margin: 18px 0 0; padding: 0 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.row { min-width: 0; display: flex; align-items: center; gap: 14px; background: var(--card); border-radius: 20px; padding: 10px 12px 10px 10px; }
 .row-pic { flex: none; width: 56px; height: 56px; border-radius: 14px; object-fit: cover; }
 .row-pic .tile-letter { font-size: 26px; }
 .row-text { flex: 1; min-width: 0; }
