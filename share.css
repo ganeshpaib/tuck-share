@@ -94,7 +94,11 @@ main:has(.one) { max-width: none; padding-bottom: 0; background: var(--butter); 
 .row-pic { flex: none; width: 56px; height: 56px; border-radius: 14px; object-fit: cover; }
 .row-pic .tile-letter { font-size: 26px; }
 .row-text { flex: 1; min-width: 0; }
-.title { font-weight: 800; font-size: 17px; line-height: 1.2; overflow-wrap: anywhere; }
+/* Instagram captions can run to a paragraph: three lines is enough to know it. */
+.title {
+  font-weight: 800; font-size: 17px; line-height: 1.2; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+}
 .detail { margin-top: 2px; color: var(--muted); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .open {
   flex: none; color: var(--ink); font-weight: 800; font-size: 14px; text-decoration: none;
