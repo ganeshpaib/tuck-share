@@ -166,10 +166,10 @@ test('one save shared on its own: the page leads with the save', async () => {
   assert.ok(!linksToApp(doc));
 });
 
-test("a collection's pocket carries no number: the count is in words beside it", () => {
+test("a collection's header is TuckMe, its name and its count: no pocket", () => {
   const doc = fakeDocument();
   render({ name: 'x', colorIndex: 0, places: [{ title: 'a', url: 'https://a.com', address: '' }, { title: 'b', url: 'https://b.com', address: '' }] }, doc, { payload: 'p' });
-  assert.ok(!doc.created.some((e) => e.className === 'pocket-label'));
+  assert.ok(!doc.created.some((e) => /pocket/.test(e.className)));
   assert.ok(doc.created.some((e) => e.textContent === '2 places shared with you'));
 });
 
