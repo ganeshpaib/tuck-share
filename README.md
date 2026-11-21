@@ -16,6 +16,9 @@ The page that opens when someone shares a category from the **TuckMe** app
 - `privacy/index.html` is the privacy policy at https://tuckme.app/privacy/
   (the URL the app stores ask for). Keep it true to the app: update it, and
   its date, before shipping anything that sends or looks up something new.
+- `terms/index.html` is the terms of use at https://tuckme.app/terms/. Every
+  page has a Privacy · Terms footer (on the home page, over the bottom of the
+  screen), and the app's Settings opens both pages.
 - Plain HTML, CSS and JavaScript; no build step, no tracking.
 
 Tests (Node 18+): `npm test`. They decode a link made by the app's own encoder
