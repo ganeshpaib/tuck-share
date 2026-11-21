@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Privacy · TuckMe</title>
+  <meta name="description" content="What TuckMe keeps on your phone, the little it sends, and who else is involved.">
+  <link rel="icon" href="../icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FBF3E2;
+      --butter: #F8DC6B;
+      --ink: #111111;
+      --muted: #5E574D;
+      --card: #FFFFFF;
+      --rule: rgba(17, 17, 17, 0.14);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { background: var(--butter); }
+    .wrap {
+      max-width: 680px; margin: 0 auto;
+      padding-left: max(24px, env(safe-area-inset-left, 0px));
+      padding-right: max(24px, env(safe-area-inset-right, 0px));
+    }
+    header .wrap { padding-block: 28px 36px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; font-weight: 800; font-size: 20px; }
+    .logo { width: 34px; height: 34px; background: url(../icon.svg) center / contain no-repeat; }
+    h1 { font-size: clamp(36px, 9vw, 52px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 900; margin: 28px 0 12px; text-wrap: balance; }
+    .lede { font-size: 20px; line-height: 1.45; margin: 0; max-width: 34em; }
+    .updated { margin: 16px 0 0; font-size: 14px; color: rgba(17, 17, 17, 0.7); }
+    main .wrap { padding-block: 12px 56px; }
+    section { padding-block: 28px; border-bottom: 1px solid var(--rule); }
+    section:last-child { border-bottom: 0; }
+    h2 { font-size: 24px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 800; margin: 0 0 12px; text-wrap: balance; }
+    h3 { font-size: 18px; font-weight: 800; margin: 20px 0 6px; }
+    p, ul { margin: 0 0 12px; }
+    ul { padding-left: 1.2em; }
+    li { margin-bottom: 6px; }
+    li::marker { color: var(--muted); }
+    .summary { background: var(--card); border-radius: 24px; padding: 22px 24px; margin-top: 28px; box-shadow: 0 8px 24px rgba(17, 17, 17, 0.06); }
+    .summary h2 { font-size: 20px; }
+    .summary ul { margin: 0; }
+    .table { overflow-x: auto; margin: 8px 0 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.45; }
+    th, td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--rule); }
+    th { font-weight: 800; }
+    td:first-child { font-weight: 600; min-width: 9em; }
+    .muted { color: var(--muted); }
+    a { color: var(--ink); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+    code { font-size: 0.92em; background: rgba(17, 17, 17, 0.06); padding: 1px 5px; border-radius: 6px; }
+    footer .wrap { padding-block: 0 40px; font-size: 14px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <a class="brand" href="/"><span class="logo" aria-hidden="true"></span>TuckMe</a>
+      <h1>Privacy</h1>
+      <p class="lede">Your tucks live on your phone. TuckMe has no accounts and no server that keeps what you save.</p>
+      <p class="updated">Last updated 21 November 2026</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="summary">
+        <h2>The short version</h2>
+        <ul>
+          <li>Everything you save stays in a database on your phone. There's no sign-in and no cloud copy.</li>
+          <li>To show a title, picture or map pin, the app asks the site you saved, or a map service, directly from your phone.</li>
+          <li>TuckMe sends anonymous usage counts, like "a tuck was saved from Instagram", never what you saved. You can turn them off in Settings.</li>
+          <li>Your location is used only when you tap near me, and it never leaves your phone.</li>
+          <li>A shared link carries the tucks inside the link itself. Nothing you share is uploaded to us.</li>
+        </ul>
+      </div>
+
+      <section id="on-your-phone">
+        <h2>What stays on your phone</h2>
+        <p>Your tucks are kept in the app's own storage on your phone:</p>
+        <ul>
+          <li>links</li>
+          <li>titles and pictures</li>
+          <li>notes and #tags</li>
+          <li>collections and places</li>
+          <li>the name you add to shared links</li>
+        </ul>
+        <p>We can't see any of it. If you delete the app, it's gone. A backup file is the only copy that leaves the app, and you choose where it goes.</p>
+      </section>
+
+      <section id="lookups">
+        <h2>What the app looks up for you</h2>
+        <p>The app contacts these services directly from your phone. Like any website you visit, each one sees your IP address and what was asked for, and its own privacy policy applies. We don't receive these requests.</p>
+        <div class="table">
+          <table>
+            <thead><tr><th>What</th><th>Who is asked</th><th>What they see</th></tr></thead>
+            <tbody>
+              <tr><td>A tuck's title and picture</td><td>The site you saved (for example Instagram, YouTube, TikTok, Amazon)</td><td>That its page was fetched</td></tr>
+              <tr><td>Where a place is</td><td>Photon by komoot (<code>photon.komoot.io</code>), then your phone's own map service (Apple or Google)</td><td>The place's name or address from the tuck, or what you type in Add location</td></tr>
+              <tr><td>Short links</td><td>The link's own service (for example <code>maps.app.goo.gl</code>, TikTok)</td><td>That the link was followed</td></tr>
+              <tr><td>The map in Places</td><td>OpenStreetMap's tile server (<code>tile.openstreetmap.org</code>)</td><td>Which area of the map you're looking at</td></tr>
+              <tr><td>Videos played in the app</td><td>YouTube, TikTok or Instagram, through their official players</td><td>That the video was played. Their cookies are cleared each time a video starts.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>If a lookup fails or you're offline, the tuck is still saved. The lookup is simply tried again later.</p>
+      </section>
+
+      <section id="location">
+        <h2>Your location</h2>
+        <p>TuckMe asks for your location only when you tap the locate button or Nearest in Places, and only while you're using the app. It's used on your phone to show where you are and how far away your places are.</p>
+        <p>It's never stored, never sent to us and never sent to the map services above. The map does load the area around you from OpenStreetMap, as with any area you scroll to. You can turn off location access for TuckMe at any time in your phone's settings.</p>
+      </section>
+
+      <section id="usage">
+        <h2>Anonymous usage counts</h2>
+        <p>To learn whether TuckMe is working for people, and where they get stuck, the app sends short, anonymous counts to our own small server at <code>stats.tuckme.app</code>.</p>
+        <h3>What's sent</h3>
+        <ul>
+          <li>A random ID made by the app when it's installed. It isn't linked to you, your phone, your Apple or Google account, or an advertising ID.</li>
+          <li>The app version and whether it's Android or iPhone.</li>
+          <li>What happened, from a fixed list, with the time. For example:
+            <ul>
+              <li>the app opened</li>
+              <li>a tuck was saved, and from which app (Instagram, YouTube and so on)</li>
+              <li>a tuck was sorted, opened, moved or removed</li>
+              <li>a place was or wasn't found</li>
+              <li>a link was shared</li>
+              <li>a backup was made</li>
+            </ul>
+          </li>
+          <li>If the app crashes: the kind of error and the line of TuckMe's code where it happened.</li>
+        </ul>
+        <h3>What's never sent</h3>
+        <p>Titles, links, notes, #tags, places, collection names, anything you type or search for, your name, and your location. The app can't put them in a count.</p>
+        <h3>How it's kept</h3>
+        <ul>
+          <li>The counts are sent a few times a day at most.</li>
+          <li>They're kept for 400 days and then deleted.</li>
+          <li>Our server doesn't store your IP address or which browser or phone software you use. The server runs on Cloudflare, which handles the connection, so Cloudflare sees your IP address while delivering it.</li>
+          <li>Only the people who make TuckMe can see the totals. We don't sell, share or advertise with them.</li>
+        </ul>
+        <h3>Turning it off</h3>
+        <p>In the app, go to <strong>You → Usage → Share anonymous usage</strong> and switch it off. Counts waiting on your phone and the random ID are deleted, and nothing more is sent. Counts already sent can't be traced back to you, so we can't pick out yours to delete them. They're removed with everything else after 400 days.</p>
+      </section>
+
+      <section id="sharing">
+        <h2>Sharing tucks</h2>
+        <p>When you share a tuck or a collection, everything travels inside the link: the titles, links, addresses, pictures, and your note and name if you add them. We don't upload or store it. Anyone with the link can read what's in it, so share it only with people you mean to.</p>
+        <p>A link opens on tuckme.app, a plain page hosted by GitHub Pages. The part of the link that holds your tucks comes after a <code>#</code>, and browsers don't send that part to any server, so GitHub and we never see it. To show the page, the browser loads:</p>
+        <ul>
+          <li>fonts from Google Fonts</li>
+          <li>each tuck's picture and site icon from that tuck's own site, with no referrer</li>
+        </ul>
+        <p>The page has no tracking or cookies of its own.</p>
+      </section>
+
+      <section id="backups">
+        <h2>Backups</h2>
+        <p>A backup is one file holding your tucks and their pictures. The app hands it to your phone's share sheet, and you choose where to keep it, such as Files, Google Drive or iCloud Drive. Wherever you put it, that service's privacy terms apply. TuckMe never uploads it by itself.</p>
+      </section>
+
+      <section id="notifications">
+        <h2>Notifications</h2>
+        <p>The Sunday digest is made on your phone and shown by your phone. No notification service or server is involved.</p>
+      </section>
+
+      <section id="stores">
+        <h2>App stores and downloads</h2>
+        <p>If you get TuckMe from the App Store or Google Play, Apple or Google handles the download, updates, ratings and any reviews under their own privacy policies. If you download the Android app from GitHub, GitHub handles that download. We only see a total download count.</p>
+      </section>
+
+      <section id="children">
+        <h2>Children</h2>
+        <p>TuckMe isn't made for children, and we don't knowingly collect anything from them. The anonymous counts above are all the app ever sends us.</p>
+      </section>
+
+      <section id="rights">
+        <h2>Your choices and rights</h2>
+        <ul>
+          <li><strong>See, change or delete your tucks.</strong> They're all in the app, so you can do this there, or delete the app.</li>
+          <li><strong>Stop the usage counts.</strong> Switch them off in Settings, as described above.</li>
+          <li><strong>Location.</strong> Allow it or not in your phone's settings. Everything else works without it.</li>
+          <li><strong>Questions or complaints.</strong> Email us at the address below. Depending on where you live (for example India, the EU or the UK), you may also complain to your data protection authority.</li>
+        </ul>
+      </section>
+
+      <section id="changes">
+        <h2>Changes to this policy</h2>
+        <p>If TuckMe starts collecting anything new, we'll update this page and the date at the top before the app version that does it is released. If the change is significant, we'll also say so in the app.</p>
+      </section>
+
+      <section id="contact">
+        <h2>Contact</h2>
+        <p>Email <a href="mailto:tuckmeapp@gmail.com">tuckmeapp@gmail.com</a>. We usually reply within a few days.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">TuckMe · Tuck it away. Find it when it counts.</div>
+  </footer>
+</body>
+</html>
