@@ -126,7 +126,9 @@ main:has(.home) { max-width: none; padding-bottom: 0; }
 .ti-bar { left: 15.6%; top: 16.6%; width: 68.8%; height: 18.6%; border-radius: 16px; background: var(--ink); }
 .ti-stem { left: 41.2%; top: 16.6%; width: 17.6%; height: 51.8%; border-radius: 15px; background: var(--ink); }
 .ti-front {
-  left: 24.4%; top: 57.6%; width: 51.2%; height: 26.4%; border-radius: 16px; background: #F6B9A8;
+  left: 24.4%; top: 57.6%; width: 51.2%; height: 26.4%; border-radius: 16px;
+  /* The stitched seam, from tuck/tool/icon/build_icon.py (pocket_seam_svg). */
+  background: #F6B9A8 url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 524 270'><path d='M242 236 L262 236 L282 236 M310 236 L350 236 M378 236 L418 236 M446 232 L447 232 L449 231 L451 230 L453 229 L455 228 L457 227 L459 226 L461 225 L463 223 L465 222 L466 221 L468 219 L470 217 L471 216 L473 214 L475 212 L476 211 L477 209 M489 184 L489 181 L489 179 L490 177 L490 175 L490 172 L490 170 L490 144 M490 116 L490 100 L490 98 L490 95 L490 93 L489 91 L489 89 L489 86 L488 84 L487 82 L487 80 L486 77 L486 76 M214 236 L174 236 M146 236 L106 236 M78 232 L77 232 L75 231 L73 230 L71 229 L69 228 L67 227 L65 226 L63 225 L61 223 L59 222 L58 221 L56 219 L54 217 L53 216 L51 214 L49 212 L48 211 L47 209 M35 184 L35 181 L35 179 L34 177 L34 175 L34 172 L34 170 L34 144 M34 116 L34 100 L34 98 L34 95 L34 93 L35 91 L35 89 L35 86 L36 84 L37 82 L37 80 L38 77 L38 76' fill='none' stroke='%23111' stroke-opacity='.28' stroke-width='16' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 100% 100% no-repeat;
   transform-origin: 50% 100%; animation: ti-squish 500ms 1100ms ease-out both;
 }
 @keyframes ti-drop { from { transform: translateY(-70%); opacity: 0; } 30% { opacity: 1; } to { transform: none; } }
