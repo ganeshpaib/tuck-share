@@ -80,8 +80,8 @@
       <div class="summary">
         <h2>The short version</h2>
         <ul>
-          <li>Everything you save stays in a database on your phone. There's no sign-in and no cloud copy.</li>
-          <li>To show a title, picture or map pin, the app asks the site you saved, or a map service, directly from your phone.</li>
+          <li>Everything you save stays on your phone. There's no sign-in and no cloud copy.</li>
+          <li>To show a title, picture or map pin, the app asks the site you saved, or a map service, from your phone.</li>
           <li>TuckMe sends anonymous usage counts, like "a tuck was saved from Instagram", never what you saved. You can turn them off in Settings.</li>
           <li>Your location is used only when you tap near me, and it never leaves your phone.</li>
           <li>A shared link carries the tucks inside the link itself. Nothing you share is uploaded to us.</li>
@@ -90,7 +90,7 @@
 
       <section id="on-your-phone">
         <h2>What stays on your phone</h2>
-        <p>Your tucks are kept in the app's own storage on your phone:</p>
+        <p>Your tucks stay on your phone:</p>
         <ul>
           <li>links</li>
           <li>titles and pictures</li>
@@ -102,21 +102,21 @@
       </section>
 
       <section id="lookups">
-        <h2>What the app looks up for you</h2>
-        <p>The app contacts these services directly from your phone. Like any website you visit, each one sees your IP address and what was asked for, and its own privacy policy applies. We don't receive these requests.</p>
+        <h2>Third-party services</h2>
+        <p>To fill in titles, pictures and maps, the app contacts these services from your phone. Like any website you visit, each one sees your IP address and what was asked for, and its own privacy policy applies. We don't receive these requests.</p>
         <div class="table">
           <table>
             <thead><tr><th>What</th><th>Who is asked</th><th>What they see</th></tr></thead>
             <tbody>
               <tr><td>A tuck's title and picture</td><td>The site you saved (for example Instagram, YouTube, TikTok, Amazon)</td><td>That its page was fetched</td></tr>
-              <tr><td>Where a place is</td><td>Photon by komoot (<code>photon.komoot.io</code>), then your phone's own map service (Apple or Google)</td><td>The place's name or address from the tuck, or what you type in Add location</td></tr>
-              <tr><td>Short links</td><td>The link's own service (for example <code>maps.app.goo.gl</code>, TikTok)</td><td>That the link was followed</td></tr>
-              <tr><td>The map in Places</td><td>OpenStreetMap's tile server (<code>tile.openstreetmap.org</code>)</td><td>Which area of the map you're looking at</td></tr>
+              <tr><td>Where a place is</td><td>Photon by komoot, then your phone's own map service (Apple or Google)</td><td>The place's name or address from the tuck, or what you type in Add location</td></tr>
+              <tr><td>Short links</td><td>The link's own service (for example Google Maps, TikTok)</td><td>That the link was followed</td></tr>
+              <tr><td>The map in Places</td><td>OpenStreetMap</td><td>Which area of the map you're looking at</td></tr>
               <tr><td>Videos played in the app</td><td>YouTube, TikTok or Instagram, through their official players</td><td>That the video was played. Their cookies are cleared each time a video starts.</td></tr>
             </tbody>
           </table>
         </div>
-        <p>If a lookup fails or you're offline, the tuck is still saved. The lookup is simply tried again later.</p>
+        <p>If a service is down or you're offline, the tuck is still saved, and the app tries again later.</p>
       </section>
 
       <section id="location">
@@ -127,7 +127,7 @@
 
       <section id="usage">
         <h2>Anonymous usage counts</h2>
-        <p>To learn whether TuckMe is working for people, and where they get stuck, the app sends short, anonymous counts to our own small server at <code>stats.tuckme.app</code>.</p>
+        <p>To learn whether TuckMe is working for people, and where they get stuck, the app sends short, anonymous counts to our own small server.</p>
         <h3>What's sent</h3>
         <ul>
           <li>A random ID made by the app when it's installed. It isn't linked to you, your phone, your Apple or Google account, or an advertising ID.</li>
@@ -142,7 +142,7 @@
               <li>a backup was made</li>
             </ul>
           </li>
-          <li>If the app crashes: the kind of error and the line of TuckMe's code where it happened.</li>
+          <li>If the app crashes: the kind of error and where in TuckMe it happened.</li>
         </ul>
         <h3>What's never sent</h3>
         <p>Titles, links, notes, #tags, places, collection names, anything you type or search for, your name, and your location. The app can't put them in a count.</p>
@@ -150,8 +150,8 @@
         <ul>
           <li>The counts are sent a few times a day at most.</li>
           <li>They're kept for 400 days and then deleted.</li>
-          <li>Our server doesn't store your IP address or which browser or phone software you use. The server runs on Cloudflare, which handles the connection, so Cloudflare sees your IP address while delivering it.</li>
-          <li>Only the people who make TuckMe can see the totals. We don't sell, share or advertise with them.</li>
+          <li>Our server doesn't store your IP address. It runs on Cloudflare, which sees your IP address while delivering the counts.</li>
+          <li>Only the makers of TuckMe can see these counts. We don't sell, share or advertise your data.</li>
         </ul>
         <h3>Turning it off</h3>
         <p>In the app, go to <strong>You → Usage → Share anonymous usage</strong> and switch it off. Counts waiting on your phone and the random ID are deleted, and nothing more is sent. Counts already sent can't be traced back to you, so we can't pick out yours to delete them. They're removed with everything else after 400 days.</p>
@@ -160,12 +160,7 @@
       <section id="sharing">
         <h2>Sharing tucks</h2>
         <p>When you share a tuck or a collection, everything travels inside the link: the titles, links, addresses, pictures, and your note and name if you add them. We don't upload or store it. Anyone with the link can read what's in it, so share it only with people you mean to.</p>
-        <p>A link opens on tuckme.app, a plain page hosted by GitHub Pages. The part of the link that holds your tucks comes after a <code>#</code>, and browsers don't send that part to any server, so GitHub and we never see it. To show the page, the browser loads:</p>
-        <ul>
-          <li>fonts from Google Fonts</li>
-          <li>each tuck's picture and site icon from that tuck's own site, with no referrer</li>
-        </ul>
-        <p>The page has no tracking or cookies of its own.</p>
+        <p>A link opens on tuckme.app, a plain web page hosted by GitHub. The tucks in the link are read by the browser and never sent to us or to GitHub. To show the page, the browser loads fonts from Google Fonts, and each tuck's picture from that tuck's own site. The page has no tracking or cookies of its own.</p>
       </section>
 
       <section id="backups">
@@ -200,7 +195,7 @@
 
       <section id="changes">
         <h2>Changes to this policy</h2>
-        <p>If TuckMe starts collecting anything new, we'll update this page and the date at the top before the app version that does it is released. If the change is significant, we'll also say so in the app.</p>
+        <p>We may update this policy from time to time. When we do, we'll change the date at the top of this page and let you know in the app.</p>
       </section>
 
       <section id="contact">
